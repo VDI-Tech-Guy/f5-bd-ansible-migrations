@@ -8,26 +8,26 @@
     "id": "usecase1",
     "label": "Ansible Workshops",
     "remark": "HTTPS with pool",
-    "App-Tennant-1": {
+    "{{ as3_tenant_name }}": {
       "class": "Tenant",
       "AS3-UseCase-1": {
         "class": "Application",
-        "serviceMain": {
+        "{{F5_VIP_Name}}": {
           "class": "Service_HTTPS",
           "virtualAddresses": [
-            "199.199.199.199"
+            "{{ private_ip }}"
           ],
           "profileMultiplex": {
               "bigip": "/Common/oneconnect"
           },
-          "pool": "serviceMain_pool",
-#          "serverTLS": "serviceMain_cert"
+          "pool": "{{ F5_VIP_Name }}_pool",
+#          "serverTLS": "{{ F5_VIP_Name }}_cert"
           "serverTLS": {
 					    "bigip": "/Common/clientssl"
 					},
           "persistenceMethods": []
         },
-        "serviceMain_pool": {
+        "{{ F5_VIP_Name }}_pool": {
           "class": "Pool",
 					"minimumMembersActive": 0,
 					"minimumMonitors": "all",
