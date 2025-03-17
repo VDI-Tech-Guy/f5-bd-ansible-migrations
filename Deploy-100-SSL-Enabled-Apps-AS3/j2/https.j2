@@ -12,7 +12,7 @@
       {% for i in range(100) %}
       "AS3-UseCase-{{ i }}": {
         "class": "Application",
-        "{{F5_VIP_Name}}": {
+        "{{F5_VIP_Name}}-{{ i }}": {
           "class": "Service_HTTPS",
           "virtualAddresses": [
             "{{ app_ips[i] }}"
