@@ -18,19 +18,21 @@
       set_fact:
         app_ips: "{{ app_ips | default([]) + ['10.0.' ~ (1 + (254 | random)) ~ '.' ~ (1 + (254 | random))] }}"
       loop: "{{ range(100) | list }}"
-      
-    - name: Error Handling for AS3
-      block:
 
-        - name: PUSH AS3 Template
-          f5networks.f5_bigip.bigip_as3_deploy:
-            content: "{{ lookup('template','j2/https.j2', split_lines=False) }}"
+    # - name: Error Handling for AS3
+    #   block:
 
-      rescue:
+    - name: PUSH AS3 Template
+      f5networks.f5_bigip.bigip_as3_deploy:
+        content: "{{ lookup('template','j2/https.j2', split_lines=False) }}"
+      timeout: 180
 
-        - name: RE-Install AS3 
-          include: "Re-Install-AS3.yaml"
+      # rescue:
 
-        - name: PUSH AS3 Template
-          f5networks.f5_bigip.bigip_as3_deploy:
-            content: "{{ lookup('template','j2/https.j2', split_lines=False) }}"
+      #   - name: RE-Install AS3 
+      #     include: "Re-Install-AS3.yaml"
+
+      #   - name: PUSH AS3 Template
+      #     f5networks.f5_bigip.bigip_as3_deploy:
+      #       content: "{{ lookup('template','j2/https.j2', split_lines=False) }}"
+      #     timeout: 180
