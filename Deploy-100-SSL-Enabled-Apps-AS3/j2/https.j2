@@ -5,44 +5,38 @@
   "declaration": {
     "class": "ADC",
     "schemaVersion": "3.36.0",
-      "controls": {
-        "logLevel": "debug",
-        "dryRun": false
-      },
     "id": "random-apps",
     "label": "100 Random Apps Deployment",
     "App-Tennant-1": {
       "class": "Tenant",
-      "Applications": {
-        {% for i in range(1) %}
-        "app{{ i }}": {
-          "class": "Application",
-          "serviceMain": {
-            "class": "Service_HTTPS",
-            "virtualAddresses": ["{{ app_ips[i] }}"],
-            "virtualPort": 443,
-            "pool": "web_pool{{ i }}",
-            "profileMultiplex": {
-               "bigip": "/Common/oneconnect"
-            },
-            "serverTLS": {
-                "bigip": "/Common/clientssl"
-            },
-            "persistenceMethods": []
+      {% for i in range(1) %}
+      "app-vip-{{ i }}": {
+        "class": "Application",
+        "serviceMain": {
+          "class": "Service_HTTPS",
+          "virtualAddresses": ["{{ app_ips[i] }}"],
+          "virtualPort": 443,
+          "pool": "web_pool{{ i }}",
+          "profileMultiplex": {
+             "bigip": "/Common/oneconnect"
           },
-          "web_pool{{ i }}": {
-            "class": "Pool",
-            "monitors": ["http"],
-            "members": [
-              {
-                "servicePort": 80,
-                "serverAddresses": ["192.168.199.{{ i+1 }}"]
-              }
-            ]
-          }
-        }{% if not loop.last %},{% endif %}
-        {% endfor %}
-      }
+          "serverTLS": {
+              "bigip": "/Common/clientssl"
+          },
+          "persistenceMethods": []
+        },
+        "web_pool{{ i }}": {
+          "class": "Pool",
+          "monitors": ["http"],
+          "members": [
+            {
+              "servicePort": 80,
+              "serverAddresses": ["192.168.199.{{ i+1 }}"]
+            }
+          ]
+        }
+      }{% if not loop.last %},{% endif %}
+      {% endfor %}
     }
-  }
+  } 
 }
