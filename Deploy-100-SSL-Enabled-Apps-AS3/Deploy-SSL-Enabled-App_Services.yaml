@@ -15,7 +15,7 @@
 
     # - name: Generate random IP addresses
     - set_fact:
-          app_ips: "{{ [ '10.0.' ~ (1 + (255 | random)) ~ '.' ~ (1 + (255 | random)) for _ in range(100) ] }}"
+        app_ips: "{{ lookup('ansible.builtin.sequence', count=100, format='10.0.%d.%d') | map('random', 255) | list }}"
 
     - name: Error Handling for AS3
       block:
