@@ -26,6 +26,10 @@
       set_fact:
         as3_app_body: "{{ lookup('template', 'j2/https.j2', split_lines=False) }}"
 
+    - name: RE-Install AS3 
+      include_tasks: "Re-Install-AS3.yaml"
+
+
     - name: PUSH AS3 Template
       f5networks.f5_bigip.bigip_as3_deploy:
         content: "{{ lookup('template','j2/https.j2', split_lines=False) }}"
