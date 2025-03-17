@@ -14,18 +14,8 @@
   tasks:
 
     # - name: Generate random IP addresses
-      # set_fact:
-      #   app_ips: "{{ lookup('community.general.random_string', length=11, chars='0123456789.', count=100).split(',') }}"
-    - name: Generate random IP addresses
-      set_fact:
-        app_ips: >-
-          {{ 
-            [ 
-              '10.0.' ~ (range(1, 255) | random) ~ '.' ~ (range(1, 255) | random) 
-              for _ in range(100) 
-            ] 
-          }}
-
+    - set_fact:
+          app_ips: "{{ [ '10.0.' ~ (1 + (255 | random)) ~ '.' ~ (1 + (255 | random)) for _ in range(100) ] }}"
 
     - name: Error Handling for AS3
       block:
