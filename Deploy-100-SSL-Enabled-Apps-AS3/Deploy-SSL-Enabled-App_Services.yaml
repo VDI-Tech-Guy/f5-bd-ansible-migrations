@@ -17,7 +17,7 @@
     - name: Generate random IP addresses
       set_fact:
         app_ips: "{{ app_ips | default([]) + ['10.0.' ~ (1 + (254 | random)) ~ '.' ~ (1 + (254 | random))] }}"
-      loop: "{{ range(100) | list }}"
+      loop: "{{ range(1) | list }}"
 
     # - name: Error Handling for AS3
     #   block:
