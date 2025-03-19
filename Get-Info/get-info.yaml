@@ -52,7 +52,7 @@
 
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
-        content: "{{ results | to_nice_json }}" 
+        content: "{{ inventory_info | to_nice_json }}" 
         dest: "/tmp/inventory_{{inventory_hostname}}.json"
 
 - name: Ansible Copy File
