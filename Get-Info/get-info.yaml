@@ -34,7 +34,7 @@
 
     - name: Debug Variables
       ansible.builtin.debug:
-        var:
-        - version
-        - hardware
-        - cpu_info_gather 
+        msg:
+        - "BIG-IP Version - {{ version }}"
+        - "BIG-IP Hardware Model - {{ hardware }}"
+        - "BIG-IP Version - {{ cpu_info_gather }}" 
