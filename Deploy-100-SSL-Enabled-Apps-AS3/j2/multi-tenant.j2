@@ -6,7 +6,7 @@
         "class": "ADC",
         "schemaVersion": "3.36.0",
         "id": "multi-tenant-apps",
-        "label": "5 Tenants with 25 Apps Each",
+        "label": "10 Tenants with 50 Apps Each",
         {% for tenant in range(1, 11) %}
         "Tenant-{{ '%03d' | format(tenant) }}": {
             "class": "Tenant",

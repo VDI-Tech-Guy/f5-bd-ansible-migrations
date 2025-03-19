@@ -1,9 +1,31 @@
 ---
-- hosts: lb
-  connection: local
+- name: Backup UCS with Declaratives
+  hosts: lb
+  connection: httpapi
   gather_facts: false
-  vars_files:
-    - vars/f5_vars.yml
-  roles:
-    - f5_remove_as3_backup
-    - f5_backup_data
+
+  vars:
+    ansible_httpapi_password: "{{ ansible_password }}"
+    ansible_network_os: f5networks.f5_bigip.bigip
+    ansible_httpapi_use_ssl: yes
+    ansible_httpapi_validate_certs: no
+    ansible_httpapi_port: "{{ server_port }}"
+
+  tasks:
+
+    - name: Create a new UCS
+      f5networks.f5_bigip.bigip_ucs_fetch:
+        dest: /tmp/cs_backup.ucs
+      register: task
+
+    - name: Download a new UCS
+      f5networks.f5_bigip.bigip_ucs_fetch:
+        dest: /tmp/cs_backup.ucs
+        src: "{{ task.src }}"
+        task_id: "{{ task.task_id }}"
+        timeout: 300
+
+    - name: Download an existing UCS
+      f5networks.f5_bigip.bigip_ucs_fetch:
+        src: cs_backup.ucs
+        dest: /tmp/cs_backup.ucs
