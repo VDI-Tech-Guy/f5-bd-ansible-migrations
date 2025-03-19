@@ -7,7 +7,7 @@
         "schemaVersion": "3.36.0",
         "id": "multi-tenant-apps",
         "label": "5 Tenants with 25 Apps Each",
-        {% for tenant in range(1, 6) %}
+        {% for tenant in range(1, 2) %}
         "Tenant{{ tenant }}": {
             "class": "Tenant",
             {% for app in range(1, 26) %}
