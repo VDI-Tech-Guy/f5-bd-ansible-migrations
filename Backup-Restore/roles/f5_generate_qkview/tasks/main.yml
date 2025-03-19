@@ -1,8 +1,0 @@
----
-# tasks file for ASM-Role
-
- - name: QKView F5
-   include_tasks: f5_generate_qkview.yaml
-   tags: 
-     - qkview
-

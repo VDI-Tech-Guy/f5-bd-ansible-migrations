@@ -1,0 +1,14 @@
+---
+- name: Create F5OS Tenant
+  hosts: velos
+  connection: httpapi
+  gather_facts: false
+
+  vars:
+    ansible_httpapi_password: "{{ ansible_password }}"
+    ansible_network_os: f5networks.f5_bigip.bigip
+    ansible_httpapi_use_ssl: yes
+    ansible_httpapi_validate_certs: no
+    ansible_httpapi_port: "{{ server_port }}"
+    ansible_command_timeout: 300
+    ansible_httpapi_use_proxy: no

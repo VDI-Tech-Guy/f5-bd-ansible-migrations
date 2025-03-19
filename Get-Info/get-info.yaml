@@ -40,3 +40,26 @@
         - "BIG-IP CPU Socket Count - {{ cpu_info_gather.versions[3].version }} {{ cpu_info_gather.versions[3].name }}" 
         - "BIG-IP CPU Info - {{ cpu_info_gather.model }}" 
         - "BIG-IP CPU Core Count - {{ cpu_info_gather.versions[1].version }} {{ cpu_info_gather.versions[1].name }}" 
+
+    - name: Combine Data to JSON File
+      ansible.builtin.set_fact:
+        inventory_info: 
+          bip_version: "{{ version }}"
+          bip_platform_hw: "{{ hardware }}"
+          bip_socket_info: "{{ cpu_info_gather.versions[3].version }} - {{ cpu_info_gather.versions[3].name }}" 
+          bip_cpu_info: "{{ cpu_info_gather.model }}" 
+          bip_cpu_cores: "{{ cpu_info_gather.versions[1].version }} - {{ cpu_info_gather.versions[1].name }}" 
+
+    - name: "Copy Inventory for {{inventory_hostname}} to file" 
+      ansible.builtin.copy:
+        content: "{{ results | to_nice_json }}" 
+        dest: "/tmp/inventory_{{inventory_hostname}}.json"
+
+- name: Ansible Copy File
+  hosts: bastion-backup
+  tasks:
+    - name: Copy from Local to Remote location
+      copy:
+       src: "{{ item }}"
+       dest: "{{ item }}"
+      with_fileglob: "/tmp/inventory_*.json"
