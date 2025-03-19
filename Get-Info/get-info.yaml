@@ -36,7 +36,7 @@
       with_items: "{{ device_facts['system_info']['hardware_information'] }}"
       when: 
       - item.type is defined
-      - "'baseboard' in item.type"
+      - "'base-board' in item.type"
 
     # - name: DISPLAY THE CPU MODEL
     #   debug:
