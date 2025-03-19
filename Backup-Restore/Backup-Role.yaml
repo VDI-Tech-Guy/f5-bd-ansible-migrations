@@ -63,5 +63,6 @@
   tasks:
     - name: Copy from Local to Remote location
       copy:
-       src: "/tmp/{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
-       dest: /tmp/{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs
+       src: "{{ item }}"
+       dest: "/tmp/{{ item }}"
+      with_fileglob: "/tmp/*.ucs"
