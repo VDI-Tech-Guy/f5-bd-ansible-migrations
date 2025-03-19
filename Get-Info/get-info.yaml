@@ -43,7 +43,8 @@
 
     - name: Combine Data to JSON File
       ansible.builtin.set_fact:
-        inventory_info: 
+        inventory_info:
+          inventory_hostname: "{{ inventory_hostname }}" 
           bip_version: "{{ version }}"
           bip_platform_hw: "{{ hardware }}"
           bip_socket_info: "{{ cpu_info_gather.versions[3].version }} - {{ cpu_info_gather.versions[3].name }}" 
