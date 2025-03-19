@@ -1,5 +1,7 @@
 {
     "class": "AS3",
+    "action": "deploy",
+    "persist": true,
     "declaration": {
         "class": "ADC",
         "schemaVersion": "3.36.0",
@@ -8,17 +10,16 @@
         {% for tenant in range(1, 6) %}
         "Tenant{{ tenant }}": {
         "class": "Tenant",
-        "applications": {
-            {% for app in range(1, 26) %}
-            "app{{ '%03d' | format(app) }}": {
+        {% for app in range(1, 26) %}
+        "App-{{ '%03d' | format(app) }}": {
             "class": "Application",
-            "serviceMain": {
+            "{{F5_VIP_Name}}-{{ '%03d' | format(app) }}": {
                 "class": "Service_HTTP",
                 "virtualAddresses": ["10.0.{{ tenant }}.{{ app }}"],
                 "virtualPort": 80,
-                "pool": "web_pool{{ '%03d' | format(app) }}"
+                "pool": "web_pool-{{ '%03d' | format(app) }}",
             },
-            "web_pool{{ '%03d' | format(app) }}": {
+            "web_pool-{{ '%03d' | format(app) }}": {
                 "class": "Pool",
                 "monitors": ["http"],
                 "members": [
