@@ -64,5 +64,5 @@
     - name: Copy from Local to Remote location
       copy:
        src: "{{ item }}"
-       dest: "/tmp/{{ item }}"
+       dest: "{{ item }}"
       with_fileglob: "/tmp/*.ucs"
