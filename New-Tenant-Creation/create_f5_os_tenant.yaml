@@ -3,12 +3,6 @@
 - name: Copy Inventory File For Tenant Creation
   hosts: bastion-backup
   tasks:
-    - name: Copy from Local to Remote location
-      ansible.builtin.fetch:
-       src: "{{ item }}"
-       dest: "{{ item }}"
-       flat: yes
-      with_fileglob: "/tmp/inventory_*.json"
 
     - name: use find to get the files list which you want to copy/fetch
       ansible.builtin.find: 
@@ -47,3 +41,7 @@
         inventory: "{{ lookup('file',item) | from_json }}"
       with_fileglob: "/tmp/inventory_*.json"
       delegate_to: localhost
+
+    - name: debug output
+      ansible.builtin.debug:
+        var: inventory
