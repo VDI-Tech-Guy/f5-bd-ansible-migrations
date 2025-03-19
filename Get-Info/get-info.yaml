@@ -33,7 +33,7 @@
     - name: DISPLAY THE CPU MODEL
       debug:
         var: item
-      with_items: device_facts['system_info']['hardware_information']
+      with_items: "{{ device_facts['system_info']['hardware_information'] }}"
 
 
     # - name: DISPLAY THE CPU MODEL
