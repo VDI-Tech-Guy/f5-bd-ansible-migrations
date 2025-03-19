@@ -15,9 +15,20 @@
 
   tasks:
 
+    - name: Get timestamp from the system
+      shell: "date +%Y-%m-%d%H-%M-%S"
+      register: tstamp
+      delegate_to: localhost
+
+    - name: Set variables
+      set_fact:
+        cur_date: "{{ tstamp.stdout[0:10] }}"
+        cur_time: "{{ tstamp.stdout[10:] }}"
+
     - name: Create a new UCS
       f5networks.f5_bigip.bigip_ucs_fetch:
-        dest: /tmp/cs_backup.ucs
+        src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
+        dest: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
       register: task
 
     - name: Debug task
@@ -41,14 +52,7 @@
       delegate_to: localhost
       when: task.changed
 
-    - name: Download a new UCS
-      f5networks.f5_bigip.bigip_ucs_fetch:
-        dest: /tmp/cs_backup.ucs
-        src: "{{ task.src }}"
-        task_id: "{{ task.task_id }}"
-        timeout: 300
-
     - name: Download an existing UCS
       f5networks.f5_bigip.bigip_ucs_fetch:
-        src: cs_backup.ucs
-        dest: /tmp/cs_backup.ucs
+        src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
+        dest: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
