@@ -35,6 +35,7 @@
         var: item
       with_items: "{{ device_facts['system_info']['hardware_information'] }}"
       when: "'baseboard' in item.type"
+      ignore_errors: true
 
     # - name: DISPLAY THE CPU MODEL
     #   debug:
