@@ -25,7 +25,7 @@
 
     - name: Gather CPU Info
       ansible.builtin.set_fact:
-        cpu_info_gather: item.model
+        cpu_info_gather: "{{ item.model }}"
       with_items: "{{ device_facts['system_info']['hardware_information'] }}"
       when: 
       - item.type is defined
