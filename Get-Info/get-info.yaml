@@ -37,5 +37,6 @@
         msg:
         - "BIG-IP Version - {{ version }}"
         - "BIG-IP Hardware Model - {{ hardware }}"
+        - "BIG-IP CPU Socket Count - {{ cpu_info_gather.versions[3].version }} {{ cpu_info_gather.versions[3].name }}" 
         - "BIG-IP CPU Info - {{ cpu_info_gather.model }}" 
-        - "BIG-IP CPU Core Count - {{ cpu_info_gather.versions[1].version }}" 
+        - "BIG-IP CPU Core Count - {{ cpu_info_gather.versions[1].version }} {{ cpu_info_gather.versions[1].name }}" 
