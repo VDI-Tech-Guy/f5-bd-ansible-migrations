@@ -37,6 +37,7 @@
       when: 
       - item.type is defined
       - "'base-board' in item.type"
+      - "'cpus' in item.name"
 
     # - name: DISPLAY THE CPU MODEL
     #   debug:
