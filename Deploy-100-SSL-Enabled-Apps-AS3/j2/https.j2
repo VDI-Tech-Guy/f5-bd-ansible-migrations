@@ -9,8 +9,8 @@
     "label": "100 Random Apps Deployment",
     "{{ as3_tenant_name }}": {
       "class": "Tenant",
-      {% for i in range(1) %}
-      "AS3-UseCase-{{ i }}": {
+      {% for i in range(100) %}
+      "AS3-UseCase-{{ '%03d' | format(i) }}": {
         "class": "Application",
         "{{F5_VIP_Name}}-{{ i }}": {
           "class": "Service_HTTPS",
@@ -20,13 +20,13 @@
           "profileMultiplex": {
              "bigip": "/Common/oneconnect"
           },
-          "pool": "web_pool{{ i }}",
+          "pool": "web_pool-{{ '%03d' | format(i) }}",
           "serverTLS": {
               "bigip": "/Common/clientssl"
           },
           "persistenceMethods": []
         },
-        "web_pool{{ i }}": {
+        "web_pool-{{ '%03d' | format(i) }}": {
           "class": "Pool",
           "monitors": ["http"],
           "members": [
