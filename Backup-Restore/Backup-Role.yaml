@@ -11,6 +11,7 @@
     ansible_httpapi_validate_certs: no
     ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 300
+    ansible_httpapi_use_proxy: no
 
 
   tasks:
