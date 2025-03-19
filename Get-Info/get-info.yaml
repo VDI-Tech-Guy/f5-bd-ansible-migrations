@@ -18,38 +18,23 @@
           validate_certs: false
       register: device_facts
 
-    - name: DISPLAY COMPLETE BIG-IP SYSTEM INFORMATION
-      debug:
-        var: device_facts
+    - name: Set BIG-IP Information in Variables
+      ansible.builtin.set_fact:
+        version: "{{ device_facts['system_info']['product_version'] }}"
+        hardware: "{{ device_facts['system_info']['marketing_name'] }}"
 
-    - name: DISPLAY ONLY THE VERSION
-      debug:
-        var: device_facts['system_info']['product_version']
-  
-    - name: DISPLAY THE HARDWARE VERSION
-      debug:
-        var: device_facts['system_info']['marketing_name']
-
-    - name: DISPLAY THE CPU MODEL
-      debug:
-        var: item.model
+    - name: Gather CPU Info
+      ansible.builtin.set_fact:
+        cpu_info_gather: item.model
       with_items: "{{ device_facts['system_info']['hardware_information'] }}"
       when: 
       - item.type is defined
       - "'base-board' in item.type"
       - "'cpus' in item.name"
 
-    - name: DISPLAY THE CPU Cores
-      debug:
-        var: item.versions[1].version
-      with_items: "{{ device_facts['system_info']['hardware_information'] }}"
-      when: 
-      - item.type is defined
-      - "'base-board' in item.type"
-      - "'cpus' in item.name"
-
-    # - name: DISPLAY THE CPU MODEL
-    #   debug:
-    #     var: item
-    #   with_items: device_facts['system_info']['hardware_information']
-    #   when: "{{item.type}} == baseboard"
+    - name: Debug Variables
+      ansible.builtin.debug:
+        var:
+        - version
+        - hardware
+        - cpu_info_gather 
