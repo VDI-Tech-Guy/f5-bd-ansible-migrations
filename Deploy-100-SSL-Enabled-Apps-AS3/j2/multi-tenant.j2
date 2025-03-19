@@ -17,7 +17,7 @@
                 "class": "Service_HTTP",
                 "virtualAddresses": ["10.0.{{ tenant }}.{{ app }}"],
                 "virtualPort": 80,
-                "pool": "web_pool-{{ '%03d' | format(app) }}",
+                "pool": "web_pool-{{ '%03d' | format(app) }}"
             },
             "web_pool-{{ '%03d' | format(app) }}": {
                 "class": "Pool",
@@ -35,4 +35,3 @@
         }{% if not loop.last %},{% endif %}
         {% endfor %}
     }
-}
