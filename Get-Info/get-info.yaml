@@ -10,6 +10,8 @@
         gather_subset:
           - system-info
           - devices
+          - vlans
+          - self-ips
         provider:
           server: "{{ ansible_host }}"
           user: "{{ ansible_user }}"
@@ -58,6 +60,8 @@
           bip_cpu_info: "{{ cpu_info_gather.model }}" 
           bip_cpu_cores: "{{ cpu_info_gather.versions[1].version }} - {{ cpu_info_gather.versions[1].name }}" 
           ansible_inventory_hostname: "{{ inventory_hostname }}"
+          vlan_info: "{{ device_facts['vlans']}}"
+          self_ips: "{{ device_facts['self_ips']}}"
 
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
