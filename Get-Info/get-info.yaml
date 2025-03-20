@@ -50,7 +50,6 @@
     - name: Combine Data to JSON File
       ansible.builtin.set_fact:
         inventory_info:
-          inventory_hostname: "{{ inventory_hostname }}"
           bip_hostname: "{{ device_name }}"
           bip_ip_addr: "{{ device_ip_address }}"
           bip_version: "{{ version }}"
@@ -58,6 +57,7 @@
           bip_socket_info: "{{ cpu_info_gather.versions[3].version }} - {{ cpu_info_gather.versions[3].name }}" 
           bip_cpu_info: "{{ cpu_info_gather.model }}" 
           bip_cpu_cores: "{{ cpu_info_gather.versions[1].version }} - {{ cpu_info_gather.versions[1].name }}" 
+          ansible_inventory_hostname: "{{ inventory_hostname }}"
 
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
