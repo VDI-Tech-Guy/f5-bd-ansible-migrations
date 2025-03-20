@@ -73,7 +73,7 @@
           ansible_inventory_hostname: "{{ inventory_hostname }}"
           vlan_info: "{{ device_facts['vlans'] }}"
           self_ips: "{{ device_facts['self_ips'] }}"
-          sync_status: "{{ device_facts['sync-status'] }}"
+          sync_status: "{{ device_facts['sync_status'] }}"
           provisioning: "{{ modules_provisioned }}"
           
 
