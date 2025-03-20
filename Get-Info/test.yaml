@@ -24,8 +24,8 @@
 
     - name: Set BIG-IP Information in Variables
       ansible.builtin.debug:
-        var: device_facts['devices']['name']
+        var: device_facts['devices'][0]['name']
 
     - name: Set BIG-IP Information in Variables
       ansible.builtin.debug:
-        var: device_facts['devices']['management_address']
+        var: device_facts['devices'][0]['management_address']
