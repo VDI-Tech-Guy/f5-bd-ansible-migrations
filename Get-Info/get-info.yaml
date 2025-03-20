@@ -52,6 +52,14 @@
         - "BIG-IP CPU Core Count - {{ cpu_info_gather.versions[1].version }} {{ cpu_info_gather.versions[1].name }}" 
         - "Ansible Inventory Hostname - {{ inventory_hostname }}"
 
+    - name: breakdown provisioning to variable
+      ansible.builtin.set_fact:
+        modules_provisioned: "{{ item.name }}"
+      with_items: "{{ device_facts['provision_info'] }}"
+      when:
+      - item.name is defined
+      - "'none' not in item.level"
+
     - name: Combine Data to JSON File
       ansible.builtin.set_fact:
         inventory_info:
@@ -63,8 +71,11 @@
           bip_cpu_info: "{{ cpu_info_gather.model }}" 
           bip_cpu_cores: "{{ cpu_info_gather.versions[1].version }} - {{ cpu_info_gather.versions[1].name }}" 
           ansible_inventory_hostname: "{{ inventory_hostname }}"
-          vlan_info: "{{ device_facts['vlans']}}"
-          self_ips: "{{ device_facts['self_ips']}}"
+          vlan_info: "{{ device_facts['vlans'] }}"
+          self_ips: "{{ device_facts['self_ips'] }}"
+          sync_status: "{{ device_facts['sync-status'] }}"
+          provisioning: "{{ modules_provisioned }}"
+          
 
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
