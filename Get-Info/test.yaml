@@ -8,7 +8,7 @@
     - name: COLLECT BIG-IP FACTS
       f5networks.f5_modules.bigip_device_info:
         gather_subset:
-          - devices
+          - interfaces
         provider:
           server: "{{ ansible_host }}"
           user: "{{ ansible_user }}"
@@ -22,10 +22,10 @@
       ansible.builtin.debug:
         var: device_facts
 
-    - name: Set BIG-IP Information in Variables
-      ansible.builtin.debug:
-        var: device_facts['devices'][0]['name']
+    # - name: Set BIG-IP Information in Variables
+    #   ansible.builtin.debug:
+    #     var: device_facts['devices'][0]['name']
 
-    - name: Set BIG-IP Information in Variables
-      ansible.builtin.debug:
-        var: device_facts['devices'][0]['management_address']
+    # - name: Set BIG-IP Information in Variables
+    #   ansible.builtin.debug:
+    #     var: device_facts['devices'][0]['management_address']
