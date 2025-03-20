@@ -54,7 +54,7 @@
 
     - name: breakdown provisioning to variable
       ansible.builtin.set_fact:
-        modules_provisioned: "{{ modules_provisioned|default([]) + [ item.name ] }}"
+        modules_provisioned: "{{ modules_provisioned|default([]) + [ item ] }}"
       with_items: "{{ device_facts['provision_info'] }}"
       when:
       - item.name is defined
