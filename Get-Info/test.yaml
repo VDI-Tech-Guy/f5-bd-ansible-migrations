@@ -8,7 +8,7 @@
     - name: COLLECT BIG-IP FACTS
       f5networks.f5_modules.bigip_device_info:
         gather_subset:
-          - interfaces
+          - self-ips
         provider:
           server: "{{ ansible_host }}"
           user: "{{ ansible_user }}"
