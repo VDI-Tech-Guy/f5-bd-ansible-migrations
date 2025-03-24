@@ -16,34 +16,34 @@
           validate_certs: false
 
 
-    # - name: URI Set Admin Password
-    #   ansible.builtin.uri: 
-    #     url: "https://{{ ansible_host }}/mgmt/shared/authz/users/admin"
-    #     method: PATCH
-    #     body_format: json
-    #     headers:
-    #       Content-Type: application/json
-    #     body: 
-    #       oldPassword: "admin"
-    #       password: "{{ ansible_password }}"
-    #     status_code: 200
-    #   register: login
-    #   ignore_errors: true
-
-    - name: Update password Admin
-      f5networks.f5_modules.bigip_user:
-        state: present
-        username_credential: admin
-        password_credential: "{{ ansible_password }}"
-        provider:
-          server: "{{ ansible_host }}"
-          user: "{{ ansible_user }}"
-          password: "admin"
-          server_port: "{{ server_port }}"
-          no_f5_teem: yes
-          validate_certs: false
-      delegate_to: localhost
+    - name: URI Set Admin Password
+      ansible.builtin.uri: 
+        url: "https://{{ ansible_host }}/mgmt/shared/authz/users/admin"
+        method: PATCH
+        body_format: json
+        headers:
+          Content-Type: application/json
+        body: 
+          oldPassword: "admin"
+          password: "{{ ansible_password }}"
+        status_code: 200
+      register: login
       ignore_errors: true
+
+    # - name: Update password Admin
+    #   f5networks.f5_modules.bigip_user:
+    #     state: present
+    #     username_credential: admin
+    #     password_credential: "{{ ansible_password }}"
+    #     provider:
+    #       server: "{{ ansible_host }}"
+    #       user: "{{ ansible_user }}"
+    #       password: "admin"
+    #       server_port: "{{ server_port }}"
+    #       no_f5_teem: yes
+    #       validate_certs: false
+    #   delegate_to: localhost
+    #   ignore_errors: true
 
     - name: Import Master Key From JSON File
       ansible.builtin.set_fact:
