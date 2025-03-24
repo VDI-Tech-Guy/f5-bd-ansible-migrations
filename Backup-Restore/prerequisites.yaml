@@ -24,6 +24,10 @@
 
     - name: debug master key master_key_output
       ansible.builtin.debug:
+        var: master_key_output
+
+    - name: debug master key master_key_output
+      ansible.builtin.debug:
         var: master_key_output.stdout
 
     # - name: set crypto key
