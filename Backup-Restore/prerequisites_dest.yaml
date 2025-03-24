@@ -1,4 +1,22 @@
 ---
+
+- name: Copy Inventory File For Tenant Creation
+  hosts: bastion-backup
+  tasks:
+
+    - name: use find to get the files list which you want to copy/fetch
+      ansible.builtin.find: 
+        paths: /tmp/
+        patterns: "master_key_*.json"
+      register: file_2_fetch
+
+    - name: use fetch to get the files
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: /tmp/
+        flat: yes
+      with_items: "{{ file_2_fetch.files }}"
+
 - name: Get Crypto Info
   hosts: velos-lb
   connection: local
@@ -45,10 +63,6 @@
     #       validate_certs: false
     #   delegate_to: localhost
     #   ignore_errors: true
-
-- name: Ansible Copy File
-  hosts: bastion-backup
-  tasks:
 
     - name: Import Master Key From JSON File
       ansible.builtin.set_fact:
