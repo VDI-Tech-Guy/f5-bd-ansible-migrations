@@ -49,6 +49,14 @@
       delegate_to: localhost
       ignore_errors: true
 
+    - name: "Change the user {{ ansible_user }} shell"
+      bigip_user:
+        username_credential: "{{ ansible_user }}"
+        shell: bash
+        state: present
+        provider: "{{ provider }}"
+      delegate_to: localhost
+
     - name: Import Master Key From JSON File
       ansible.builtin.set_fact:
         master_key_output: "{{ lookup('file',item) | from_json }}"
