@@ -30,22 +30,22 @@
       ansible.builtin.debug:
         var: master_key_output.stdout
 
-    # - name: set crypto key
-    #   f5networks.f5_modules.bigip_command:
-    #     commands: >
-    #       run /util bash -c "
-    #       expect -c 'spawn tmsh modify /sys crypto master-key prompt-for-password;
-    #       sleep 1;
-    #       send -- {{ crypto_key }}\r;
-    #       sleep 1;
-    #       send -- {{ crypto_key }}\r;
-    #       sleep 1;'"
-    #     provider: "{{ provider }}"
+    - name: set crypto key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "
+          expect -c 'spawn tmsh modify /sys crypto master-key prompt-for-password;
+          sleep 1;
+          send -- {{ ansible_password }}\r;
+          sleep 1;
+          send -- {{ ansible_password }}\r;
+          sleep 1;'"
+        provider: "{{ provider }}"
 
-    # - name: SAVE RUNNING CONFIG ON BIG-IP
-    #   f5networks.f5_modules.bigip_config:
-    #     provider: "{{ provider }}"
-    #     save: true
+    - name: SAVE RUNNING CONFIG ON BIG-IP
+      f5networks.f5_modules.bigip_config:
+        provider: "{{ provider }}"
+        save: true
           
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
