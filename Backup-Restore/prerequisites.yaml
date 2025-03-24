@@ -61,4 +61,4 @@
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ item }}" 
-        with_fileglob: "/tmp/master_key_*.json"
+      with_fileglob: "/tmp/master_key_*.json"
