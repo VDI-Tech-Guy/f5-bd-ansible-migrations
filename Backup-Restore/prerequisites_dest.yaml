@@ -37,7 +37,7 @@
       uri:
         url: "https://{{ ansible_host }}/mgmt/shared/authz/users/admin"
         method: PATCH
-        body: '{"oldPassword":"admin","password":"{{ f5_api_admin_password }}"}'
+        body: '{"oldPassword":"admin","password":"{{ ansible_password }}"}'
         body_format: json
         validate_certs: false
         force_basic_auth: true
