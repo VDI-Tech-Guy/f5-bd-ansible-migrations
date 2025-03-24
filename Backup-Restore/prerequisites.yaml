@@ -18,8 +18,7 @@
     - name: Get Master Key
       f5networks.f5_modules.bigip_command:
         commands: >
-          run /util bash -c "
-          expect -c 'spawn f5mku -K'"
+          run /util bash -c "f5mku -K"
         provider: "{{ provider }}"
       register: master_key_output
 
