@@ -33,20 +33,20 @@
           no_f5_teem: yes
           validate_certs: false
 
-
-    - name: URI Set Admin Password
-      ansible.builtin.uri: 
+    - name: Set admin Password
+      uri:
         url: "https://{{ ansible_host }}/mgmt/shared/authz/users/admin"
         method: PATCH
+        body: '{"oldPassword":"admin","password":"{{ f5_api_admin_password }}"}'
         body_format: json
-        headers:
-          Content-Type: application/json
-        body: 
-          oldPassword: "admin"
-          password: "{{ ansible_password }}"
-        status_code: 200
         validate_certs: false
-      register: login
+        force_basic_auth: true
+        user: admin
+        password: admin
+        headers:
+          Content-Type: "application/json"
+      register: result
+      delegate_to: localhost
       ignore_errors: true
 
     # - name: Update password Admin
