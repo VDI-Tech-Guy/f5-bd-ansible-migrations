@@ -49,21 +49,6 @@
       delegate_to: localhost
       ignore_errors: true
 
-    # - name: Update password Admin
-    #   f5networks.f5_modules.bigip_user:
-    #     state: present
-    #     username_credential: admin
-    #     password_credential: "{{ ansible_password }}"
-    #     provider:
-    #       server: "{{ ansible_host }}"
-    #       user: "{{ ansible_user }}"
-    #       password: "admin"
-    #       server_port: "{{ server_port }}"
-    #       no_f5_teem: yes
-    #       validate_certs: false
-    #   delegate_to: localhost
-    #   ignore_errors: true
-
     - name: Import Master Key From JSON File
       ansible.builtin.set_fact:
         master_key_output: "{{ lookup('file',item) | from_json }}"
@@ -78,20 +63,26 @@
       ansible.builtin.debug:
         var: master_key_output.stdout
 
-    # - name: set crypto key
-    #   f5networks.f5_modules.bigip_command:
-    #     commands: >
-    #       run /util bash -c "
-    #       expect -c 'spawn tmsh modify /sys crypto master-key prompt-for-password;
-    #       sleep 1;
-    #       send -- {{ ansible_password }}\r;
-    #       sleep 1;
-    #       send -- {{ ansible_password }}\r;
-    #       sleep 1;'"
-    #     provider: "{{ provider }}"
+    - name: Set Master Key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "f5mku -r {{ master_key_output.stdout }}"
+        provider: "{{ provider }}"
 
-    # - name: SAVE RUNNING CONFIG ON BIG-IP
-    #   f5networks.f5_modules.bigip_config:
-    #     provider: "{{ provider }}"
-    #     save: true
+    - name: Set crypto key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "
+          expect -c 'spawn tmsh modify /sys crypto master-key prompt-for-password;
+          sleep 1;
+          send -- {{ ansible_password }}\r;
+          sleep 1;
+          send -- {{ ansible_password }}\r;
+          sleep 1;'"
+        provider: "{{ provider }}"
+
+    - name: SAVE RUNNING CONFIG ON BIG-IP
+      f5networks.f5_modules.bigip_config:
+        provider: "{{ provider }}"
+        save: true
           
