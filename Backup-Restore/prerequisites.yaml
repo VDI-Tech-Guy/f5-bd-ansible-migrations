@@ -55,9 +55,10 @@
 
 - name: Ansible Copy File
   hosts: bastion-backup
+
   tasks:
     - name: Copy from Local to Remote location
-      copy:
-      src: "{{ item }}"
-      dest: "{{ item }}"
-      with_fileglob: "/tmp/master_key_*.json"
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ item }}" 
+        with_fileglob: "/tmp/master_key_*.json"
