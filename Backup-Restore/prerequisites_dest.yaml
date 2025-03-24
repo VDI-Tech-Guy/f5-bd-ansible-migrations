@@ -69,12 +69,12 @@
 
     - name: debug master key master_key_output
       ansible.builtin.debug:
-        var: master_key_output.stdout
+        var: master_key_output.stdout[0]
 
     - name: Set Master Key
       f5networks.f5_modules.bigip_command:
         commands: >
-          run /util bash -c "f5mku -r {{ master_key_output.stdout }}"
+          run /util bash -c "f5mku -r {{ master_key_output.stdout[0] }}"
         provider: "{{ provider }}"
 
     - name: Set crypto key
