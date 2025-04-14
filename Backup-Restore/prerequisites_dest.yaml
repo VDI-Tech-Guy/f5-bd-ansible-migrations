@@ -49,22 +49,6 @@
       delegate_to: localhost
       ignore_errors: true
 
-    - name: Set root Password
-      uri:
-        url: "https://{{ ansible_host }}/mgmt/shared/authz/users/admin"
-        method: PATCH
-        body: '{"oldPassword":"root","password":"{{ ansible_password }}"}'
-        body_format: json
-        validate_certs: false
-        force_basic_auth: true
-        user: admin
-        password: "{{ ansible_password }}"
-        headers:
-          Content-Type: "application/json"
-      register: result
-      delegate_to: localhost
-      ignore_errors: true
-
     - name: "Change the user {{ ansible_user }} shell"
       bigip_user:
         username_credential: "{{ ansible_user }}"
