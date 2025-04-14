@@ -21,11 +21,32 @@
     #     app_ips: "{{ app_ips | default([]) + ['10.0.' ~ (1 + (254 | random)) ~ '.' ~ (1 + (254 | random))] }}"
     #   loop: "{{ range(100) | list }}"
 
+    - name: Setup provider
+      ansible.builtin.set_fact:
+        provider:
+          server: "{{ ansible_host }}"
+          user: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          server_port: "443"
+          no_f5_teem: yes
+          validate_certs: false
+
+    - name: Get Failover State - Module
+      f5networks.f5_modules.bigip_command:
+        commands: show sys failover
+        provider: "{{ provider }}"
+      connection: local
+      register: f5_info
+
     - name: CREATE AS3 JSON BODY
       set_fact:
         as3_app_body: "{{ lookup('template', 'j2/multi-tenant.j2', split_lines=False) }}"
+      when:
+      - f5_info.stdout[0].split()[1] |lower == "active"
 
     - name: PUSH AS3 Template
       f5networks.f5_bigip.bigip_as3_deploy:
         content: "{{ lookup('template','j2/multi-tenant.j2', split_lines=False) }}"
-      timeout: 180
+      timeout: 360
+      when:
+      - f5_info.stdout[0].split()[1] |lower == "active"
