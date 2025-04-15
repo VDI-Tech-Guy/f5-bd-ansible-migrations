@@ -31,7 +31,7 @@
     ansible_httpapi_validate_certs: false
     ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 1800
-    persistent_log_messages: true
+    persistent_log_messages: tenant_info.true
     partition_name: DemoPartition
 
   tasks:
@@ -57,18 +57,18 @@
       ansible.builtin.debug:
         var: tenant_info
 
-    # - name: Create tenant 
-    #   f5networks.f5os.f5os_tenant:
-    #     name: automation-test
-    #     image_name: "{{ tenant_info.tenant_images[0].name }}"
-    #     nodes:
-    #       - 1
-    #     mgmt_ip: 192.170.7.198
-    #     mgmt_prefix: 24
-    #     mgmt_gateway: 192.170.7.1
-    #     vlans: "{{ tenant_info.vlans[0].vlan_id }}"
-    #     cpu_cores: 2
-    #     memory: 4096
-    #     cryptos: disabled
-    #     virtual_disk_size: 120
-    #     running_state: deployed
+    - name: Create tenant 
+      f5networks.f5os.f5os_tenant:
+        name: automation-test
+        image_name: "{{ tenant_info.tenant_images[0].name }}"
+        nodes:
+          - 1
+        mgmt_ip: 192.170.7.198
+        mgmt_prefix: 24
+        mgmt_gateway: 192.170.7.1
+        vlans: "{{ tenant_info.vlans[0].vlan_id }}"
+        cpu_cores: 2
+        memory: 4096
+        cryptos: disabled
+        virtual_disk_size: 120
+        running_state: configured
