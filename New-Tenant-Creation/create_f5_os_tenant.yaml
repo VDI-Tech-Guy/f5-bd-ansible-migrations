@@ -47,7 +47,7 @@
         var: inventory
 
     - name: Collect interface and vlan information on F5OS device
-      f5os_device_info:
+      f5networks.f5os.f5os_device_info:
         gather_subset:
           - tenant-images
           - vlans 
