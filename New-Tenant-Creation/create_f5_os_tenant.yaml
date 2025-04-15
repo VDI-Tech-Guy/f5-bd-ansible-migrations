@@ -33,6 +33,7 @@
     ansible_command_timeout: 1800
     persistent_log_messages: tenant_info.true
     partition_name: DemoPartition
+    cpu_cores: 2
 
   tasks:
 
@@ -67,8 +68,8 @@
         mgmt_prefix: 24
         mgmt_gateway: 192.170.7.1
         vlans: "{{ tenant_info.vlans[0].vlan_id }}"
-        cpu_cores: 2
-        memory: 4096
+        cpu_cores: "{{ cpu_cores }}"
+        memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512  }}"
         cryptos: disabled
         virtual_disk_size: 120
         running_state: configured
