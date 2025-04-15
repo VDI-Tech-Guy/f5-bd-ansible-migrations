@@ -38,9 +38,12 @@
   tasks:
 
     - name: math 
-      debug: 
-        msg: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
+      set_fact: 
+        memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
 
+    - name: debug output
+      ansible.builtin.debug:
+        var: memory
 
     # - name: Import Information From JSON File
     #   ansible.builtin.set_fact:
