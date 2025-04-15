@@ -35,6 +35,7 @@
     partition_name: DemoPartition
     cpu_cores: 4
     memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
+    mgmt_vlan: 3007
 
   tasks:
 
