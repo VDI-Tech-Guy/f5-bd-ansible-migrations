@@ -22,59 +22,59 @@
           server_port: "{{ server_port }}"
           no_f5_teem: yes
           validate_certs: false
-      register: device_facts
+      register: inventory_info
 
-    - name: Set BIG-IP Information in Variables
-      ansible.builtin.set_fact:
-        version: "{{ device_facts['system_info']['product_version'] }}"
-        hardware: "{{ device_facts['system_info']['marketing_name'] }}"
-        device_name: "{{ device_facts['devices'][0]['name'] }}"
-        device_ip_address: "{{ device_facts['devices'][0]['management_address'] }}"
+    # - name: Set BIG-IP Information in Variables
+    #   ansible.builtin.set_fact:
+    #     version: "{{ device_facts['system_info']['product_version'] }}"
+    #     hardware: "{{ device_facts['system_info']['marketing_name'] }}"
+    #     device_name: "{{ device_facts['devices'][0]['name'] }}"
+    #     device_ip_address: "{{ device_facts['devices'][0]['management_address'] }}"
 
-    - name: Gather CPU Info
-      ansible.builtin.set_fact:
-        cpu_info_gather: "{{ item }}"
-      with_items: "{{ device_facts['system_info']['hardware_information'] }}"
-      when: 
-      - item.type is defined
-      - "'base-board' in item.type"
-      - "'cpus' in item.name"
+    # - name: Gather CPU Info
+    #   ansible.builtin.set_fact:
+    #     cpu_info_gather: "{{ item }}"
+    #   with_items: "{{ device_facts['system_info']['hardware_information'] }}"
+    #   when: 
+    #   - item.type is defined
+    #   - "'base-board' in item.type"
+    #   - "'cpus' in item.name"
 
-    - name: Debug Variables
-      ansible.builtin.debug:
-        msg:
-        - "BIG-IP Device Hostname - {{ device_name }}"
-        - "BIG-IP Device IP - {{ device_ip_address }}"
-        - "BIG-IP Version - {{ version }}"
-        - "BIG-IP Hardware Model - {{ hardware }}"
-        - "BIG-IP CPU Socket Count - {{ cpu_info_gather.versions[3].version }} {{ cpu_info_gather.versions[3].name }}" 
-        - "BIG-IP CPU Info - {{ cpu_info_gather.model }}" 
-        - "BIG-IP CPU Core Count - {{ cpu_info_gather.versions[1].version }} {{ cpu_info_gather.versions[1].name }}" 
-        - "Ansible Inventory Hostname - {{ inventory_hostname }}"
+    # - name: Debug Variables
+    #   ansible.builtin.debug:
+    #     msg:
+    #     - "BIG-IP Device Hostname - {{ device_name }}"
+    #     - "BIG-IP Device IP - {{ device_ip_address }}"
+    #     - "BIG-IP Version - {{ version }}"
+    #     - "BIG-IP Hardware Model - {{ hardware }}"
+    #     - "BIG-IP CPU Socket Count - {{ cpu_info_gather.versions[3].version }} {{ cpu_info_gather.versions[3].name }}" 
+    #     - "BIG-IP CPU Info - {{ cpu_info_gather.model }}" 
+    #     - "BIG-IP CPU Core Count - {{ cpu_info_gather.versions[1].version }} {{ cpu_info_gather.versions[1].name }}" 
+    #     - "Ansible Inventory Hostname - {{ inventory_hostname }}"
 
-    - name: breakdown provisioning to variable
-      ansible.builtin.set_fact:
-        modules_provisioned: "{{ modules_provisioned|default([]) + [ item ] }}"
-      with_items: "{{ device_facts['provision_info'] }}"
-      when:
-      - item.name is defined
-      - "'none' not in item.level"
+    # - name: breakdown provisioning to variable
+    #   ansible.builtin.set_fact:
+    #     modules_provisioned: "{{ modules_provisioned|default([]) + [ item ] }}"
+    #   with_items: "{{ device_facts['provision_info'] }}"
+    #   when:
+    #   - item.name is defined
+    #   - "'none' not in item.level"
 
-    - name: Combine Data to JSON File
-      ansible.builtin.set_fact:
-        inventory_info:
-          bip_hostname: "{{ device_name }}"
-          bip_ip_addr: "{{ device_ip_address }}"
-          bip_version: "{{ version }}"
-          bip_platform_hw: "{{ hardware }}"
-          bip_socket_info: "{{ cpu_info_gather.versions[3].version }} - {{ cpu_info_gather.versions[3].name }}" 
-          bip_cpu_info: "{{ cpu_info_gather.model }}" 
-          bip_cpu_cores: "{{ cpu_info_gather.versions[1].version }} - {{ cpu_info_gather.versions[1].name }}" 
-          ansible_inventory_hostname: "{{ inventory_hostname }}"
-          vlan_info: "{{ device_facts['vlans'] }}"
-          self_ips: "{{ device_facts['self_ips'] }}"
-          sync_status: "{{ device_facts['sync_status'] }}"
-          provisioning: "{{ modules_provisioned }}"
+    # - name: Combine Data to JSON File
+    #   ansible.builtin.set_fact:
+    #     inventory_info:
+    #       bip_hostname: "{{ device_name }}"
+    #       bip_ip_addr: "{{ device_ip_address }}"
+    #       bip_version: "{{ version }}"
+    #       bip_platform_hw: "{{ hardware }}"
+    #       bip_socket_info: "{{ cpu_info_gather.versions[3].version }} - {{ cpu_info_gather.versions[3].name }}" 
+    #       bip_cpu_info: "{{ cpu_info_gather.model }}" 
+    #       bip_cpu_cores: "{{ cpu_info_gather.versions[1].version }} - {{ cpu_info_gather.versions[1].name }}" 
+    #       ansible_inventory_hostname: "{{ inventory_hostname }}"
+    #       vlan_info: "{{ device_facts['vlans'] }}"
+    #       self_ips: "{{ device_facts['self_ips'] }}"
+    #       sync_status: "{{ device_facts['sync_status'] }}"
+    #       provisioning: "{{ modules_provisioned }}"
 
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
