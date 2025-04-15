@@ -60,13 +60,13 @@
     # - name: Create tenant 
     #   f5networks.f5os.f5os_tenant:
     #     name: automation-test
-    #     image_name: BIGIP-17.5.0-0.0.15.ALL-F5OS.qcow2.zip.bundle
+    #     image_name: "{{ tenant_info.tenant_images[0].name }}"
     #     nodes:
     #       - 1
-    #     mgmt_ip: 10.10.10.10
+    #     mgmt_ip: 192.170.7.198
     #     mgmt_prefix: 24
-    #     mgmt_gateway: 10.10.10.1
-    #     vlans: [245]
+    #     mgmt_gateway: 192.170.7.1
+    #     vlans: "{{ tenant_info.vlans[0].vlan_id }}"
     #     cpu_cores: 2
     #     memory: 4096
     #     cryptos: disabled
