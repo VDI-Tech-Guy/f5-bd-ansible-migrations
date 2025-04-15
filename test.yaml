@@ -23,7 +23,7 @@
 
     - name: Configure F5 via DO with Device Certs Tagged Networks
       ansible.builtin.uri:
-        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenant-images:images
+        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenant-images:images"
         method: GET
         status_code: 200
         timeout: 300
