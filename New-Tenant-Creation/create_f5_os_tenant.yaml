@@ -75,6 +75,6 @@
         vlans: "{{ tenant_info.vlans[0].vlan_id }}"
         cpu_cores: "{{ cpu_cores }}"
         memory: "{{ memory |int }}"
-        cryptos: disabled
+        cryptos: enabled
         virtual_disk_size: 120
         running_state: configured
