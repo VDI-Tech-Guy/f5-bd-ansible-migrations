@@ -34,50 +34,47 @@
     persistent_log_messages: tenant_info.true
     partition_name: DemoPartition
     cpu_cores: 2
+    memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
 
   tasks:
-
-    - name: math 
-      set_fact: 
-        memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
 
     - name: debug output
       ansible.builtin.debug:
         msg: "{{ memory |int }}"
 
-    # - name: Import Information From JSON File
-    #   ansible.builtin.set_fact:
-    #     inventory: "{{ lookup('file',item) | from_json }}"
-    #   with_fileglob: "/tmp/inventory_*.json"
-    #   delegate_to: localhost
+    - name: Import Information From JSON File
+      ansible.builtin.set_fact:
+        inventory: "{{ lookup('file',item) | from_json }}"
+      with_fileglob: "/tmp/inventory_*.json"
+      delegate_to: localhost
 
-    # - name: debug output
-    #   ansible.builtin.debug:
-    #     var: inventory
+    - name: debug output
+      ansible.builtin.debug:
+        var: inventory
 
-    # - name: Collect interface and vlan information on F5OS device
-    #   f5networks.f5os.f5os_device_info:
-    #     gather_subset:
-    #       - tenant-images
-    #       - vlans 
-    #   register: tenant_info
+    - name: Collect interface and vlan information on F5OS device
+      f5networks.f5os.f5os_device_info:
+        gather_subset:
+          - tenant-images
+          - vlans 
+      register: tenant_info
 
-    # - name: debug output
-    #   ansible.builtin.debug:
-    #     var: tenant_info
+    - name: debug output
+      ansible.builtin.debug:
+        var: tenant_info
 
-    # - name: Create tenant 
-    #   f5networks.f5os.f5os_tenant:
-    #     name: automation-test
-    #     image_name: "{{ tenant_info.tenant_images[0].name }}"
-    #     nodes:
-    #       - 1
-    #     mgmt_ip: 192.170.7.198
-    #     mgmt_prefix: 24
-    #     mgmt_gateway: 192.170.7.1
-    #     vlans: "{{ tenant_info.vlans[0].vlan_id }}"
-    #     cpu_cores: "{{ cpu_cores }}"
-    #     memory: "( 3.5 * 1024 * {{ cpu_cores }} ) + 512"
-    #     cryptos: disabled
-    #     virtual_disk_size: 120
-    #     running_state: configured
+    - name: Create tenant 
+      f5networks.f5os.f5os_tenant:
+        name: automation-test
+        image_name: "{{ tenant_info.tenant_images[0].name }}"
+        nodes:
+          - 1
+        mgmt_ip: 192.170.7.198
+        mgmt_prefix: 24
+        mgmt_gateway: 192.170.7.1
+        vlans: "{{ tenant_info.vlans[0].vlan_id }}"
+        cpu_cores: "{{ cpu_cores }}"
+        memory: "{{ memory |int }}"
+        cryptos: disabled
+        virtual_disk_size: 120
+        running_state: configured
