@@ -39,7 +39,7 @@
 
     - name: math 
       debug: 
-        msg: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 }}"
+        msg: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | type_debug}}"
 
 
     # - name: Import Information From JSON File
