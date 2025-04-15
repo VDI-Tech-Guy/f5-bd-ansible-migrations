@@ -65,7 +65,7 @@
 
     - name: Create tenant 
       f5networks.f5os.f5os_tenant:
-        name: "{{ inventory.devices[0].hostname }}"
+        name: '{{ inventory.devices[0].hostname | regex_replace("^(.*)-[^-]+$", "\\1") }}'
         image_name: "{{ tenant_info.tenant_images[0].name }}"
         nodes:
           - 1
