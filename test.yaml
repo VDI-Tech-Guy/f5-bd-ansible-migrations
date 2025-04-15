@@ -34,22 +34,12 @@
       delegate_to: localhost
       register: do_result
 
+    - debug:
+        var: do_result
+        
     - name: Configure F5 via DO with Device Certs Tagged Networks
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/state/f5-tenant-mgmt-vlan:mgmt-vlan"
-        method: GET
-        status_code: 200
-        timeout: 300
-        force_basic_auth: true
-        user: "{{ ansible_user }}"
-        password: "{{ ansible_password }}"
-        validate_certs: false
-      delegate_to: localhost
-      register: do_result
-
-    - name: Configure F5 via DO with Device Certs Tagged Networks
-      ansible.builtin.uri:
-        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenant-images:images
         method: GET
         status_code: 200
         timeout: 300
