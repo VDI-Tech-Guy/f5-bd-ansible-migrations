@@ -15,6 +15,7 @@
           - trunks
           - provision-info
           - sync-status
+          - management-routes
         provider:
           server: "{{ ansible_host }}"
           user: "{{ ansible_user }}"
