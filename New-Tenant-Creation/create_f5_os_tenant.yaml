@@ -43,7 +43,7 @@
 
     - name: debug output
       ansible.builtin.debug:
-        var: memory
+        msg: "{{ memory |int }}"
 
     # - name: Import Information From JSON File
     #   ansible.builtin.set_fact:
