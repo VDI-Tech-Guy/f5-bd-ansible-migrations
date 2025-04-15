@@ -75,7 +75,6 @@
           self_ips: "{{ device_facts['self_ips'] }}"
           sync_status: "{{ device_facts['sync_status'] }}"
           provisioning: "{{ modules_provisioned }}"
-          
 
     - name: "Copy Inventory for {{inventory_hostname}} to file" 
       ansible.builtin.copy:
@@ -86,7 +85,7 @@
   hosts: bastion-backup
   tasks:
     - name: Copy from Local to Remote location
-      copy:
-      src: "{{ item }}"
-      dest: "{{ item }}"
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ item }}"
       with_fileglob: "/tmp/inventory_*.json"
