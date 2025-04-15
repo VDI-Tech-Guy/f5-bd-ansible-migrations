@@ -33,7 +33,7 @@
     ansible_command_timeout: 1800
     persistent_log_messages: tenant_info.true
     partition_name: DemoPartition
-    cpu_cores: 2
+    cpu_cores: 4
     memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
 
   tasks:
