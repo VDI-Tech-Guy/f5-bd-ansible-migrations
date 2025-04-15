@@ -45,3 +45,30 @@
     - name: debug output
       ansible.builtin.debug:
         var: inventory
+
+    - name: Collect interface and vlan information on F5OS device
+      f5os_device_info:
+        gather_subset:
+          - tenant-images
+          - vlans 
+      register: tenant_info
+
+    - name: debug output
+      ansible.builtin.debug:
+        var: tenant_info
+
+    # - name: Create tenant 
+    #   f5networks.f5os.f5os_tenant:
+    #     name: automation-test
+    #     image_name: BIGIP-17.5.0-0.0.15.ALL-F5OS.qcow2.zip.bundle
+    #     nodes:
+    #       - 1
+    #     mgmt_ip: 10.10.10.10
+    #     mgmt_prefix: 24
+    #     mgmt_gateway: 10.10.10.1
+    #     vlans: [245]
+    #     cpu_cores: 2
+    #     memory: 4096
+    #     cryptos: disabled
+    #     virtual_disk_size: 120
+    #     running_state: deployed
