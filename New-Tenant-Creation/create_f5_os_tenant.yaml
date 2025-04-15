@@ -69,7 +69,7 @@
         mgmt_gateway: 192.170.7.1
         vlans: "{{ tenant_info.vlans[0].vlan_id }}"
         cpu_cores: "{{ cpu_cores }}"
-        memory: "{{ (( 3.5 * 1024 * cpu_cores ) + 512  | int }}"
+        memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512  | int }}"
         cryptos: disabled
         virtual_disk_size: 120
         running_state: configured
