@@ -65,11 +65,11 @@
 
     - name: Create tenant 
       f5networks.f5os.f5os_tenant:
-        name: "{{ inventory.bip_hostname }}"
+        name: "{{ inventory.devices[0].hostname }}"
         image_name: "{{ tenant_info.tenant_images[0].name }}"
         nodes:
           - 1
-        mgmt_ip: "{{ inventory.bip_hostname }}"
+        mgmt_ip: 192.170.7.198
         mgmt_prefix: 24
         mgmt_gateway: 192.170.7.1
         vlans: "{{ tenant_info.vlans[0].vlan_id }}"
