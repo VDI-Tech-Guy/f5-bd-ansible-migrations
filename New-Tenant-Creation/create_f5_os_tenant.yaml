@@ -35,7 +35,11 @@
     partition_name: DemoPartition
     cpu_cores: 4
     memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
+    mgmt_ip: 192.170.14.85
+    mgmt_sn_cidr: 24
+    mgmt_gw: 192.170.14.1
     mgmt_vlan: 3007
+
 
   tasks:
 
@@ -64,18 +68,38 @@
       ansible.builtin.debug:
         var: tenant_info
 
-    - name: Create tenant 
+    - name: Create F5 Tenant
       f5networks.f5os.f5os_tenant:
         name: '{{ inventory.devices[0].hostname.split(".")[0] }}'
         image_name: "{{ tenant_info.tenant_images[0].name }}"
         nodes:
           - 1
-        mgmt_ip: "{{ inventory.devices[0].management_address }}"
-        mgmt_prefix: 24
-        mgmt_gateway: "{{ inventory.management_routes[0].gateway }}"
+        mgmt_ip: "{{ mgmt_ip }}"
+        mgmt_prefix: "{{ mgmt_sn_cidr }}"
+        mgmt_gateway: "{{ mgmt_gw }}"
         vlans: "{{ tenant_info.vlans[0].vlan_id }}"
         cpu_cores: "{{ cpu_cores }}"
         memory: "{{ memory |int }}"
         cryptos: enabled
-        virtual_disk_size: 120
+        virtual_disk_size: "{{ disk_size | default('120') }}"
         running_state: configured
+
+    - name: Set Management-VLAN if Defined
+      ansible.builtin.uri:
+        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config/f5-tenant-mgmt-vlan:mgmt-vlan"
+        method: PUT
+        status_code: 
+          - 200
+          - 201
+        timeout: 300
+        body_format: json
+        headers:
+          Content-Type: "application/yang-data+json"
+        body:
+          f5-tenant-mgmt-vlan:mgmt-vlan: "{{ mgmt_vlan }}"
+        force_basic_auth: true
+        user: "{{ ansible_user }}"
+        password: "{{ ansible_password }}"
+        validate_certs: false
+      when: mgmt_vlan is defined
+      delegate_to: localhost
