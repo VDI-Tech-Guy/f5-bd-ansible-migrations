@@ -46,7 +46,7 @@
       when: '"yes" in item.interfaces[0].tagged'
       delegate_to: localhost
 
-    - name: Breate VLANs From Old Confiruation
+    - name: Create VLANs From Old Confiruation
       f5networks.f5os.f5os_vlan:
         name: "vl{{item.tag}}"
         vlan_id: "{{item.tag}}"

@@ -30,6 +30,7 @@
     ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 1800
     persistent_log_messages: tenant_info.true
+    vlan_list: []
 
   tasks:
 
@@ -57,6 +58,23 @@
     # - name: debug output
     #   ansible.builtin.debug:
     #     var: tenant_info
+
+    - name: Create VLANs From Old Confiruation
+      f5networks.f5os.f5os_vlan:
+        name: "vl{{item.tag}}"
+        vlan_id: "{{item.tag}}"
+      with_items: "{{ inventory.vlans }}"
+      when: '"yes" in item.interfaces[0].tagged'
+
+    - name: Create VLANs List
+      ansible.builtin.set_fact:
+        vlan_list: "{{ vlan_list + [item.tag] }}"
+      with_items: "{{ inventory.vlans }}"
+      when: '"yes" in item.interfaces[0].tagged'
+
+    - name: debug output
+      ansible.builtin.debug:
+        var: vlan_list
 
     - name: Create F5 Tenant
       f5networks.f5os.f5os_tenant:
