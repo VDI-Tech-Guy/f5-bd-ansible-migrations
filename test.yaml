@@ -23,4 +23,5 @@
       delegate_to: localhost
 
     - debug:
-        var: inventory
+        var: item
+      with_items: inventory.vlans
