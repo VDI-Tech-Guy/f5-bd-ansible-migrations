@@ -29,16 +29,16 @@
     ansible_httpapi_use_ssl: true
     ansible_httpapi_use_proxy: false
     ansible_httpapi_validate_certs: false
-    ansible_httpapi_port: "{{ server_port }}"
+    ansible_httpapi_port: 8888
     ansible_command_timeout: 1800
     persistent_log_messages: tenant_info.true
     partition_name: DemoPartition
     cpu_cores: 4
     memory: "{{ ( 3.5 * 1024 * cpu_cores ) + 512 | int }}"
-    # mgmt_ip: 192.170.14.85
-    # mgmt_sn_cidr: 24
-    # mgmt_gw: 192.170.14.1
-    # mgmt_vlan: 3007
+    mgmt_ip: 192.170.14.85
+    mgmt_sn_cidr: 24
+    mgmt_gw: 192.170.14.1
+    mgmt_vlan: 3007
 
 
   tasks:
