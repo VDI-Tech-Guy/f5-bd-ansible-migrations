@@ -36,28 +36,6 @@
         password: "{{ ansible_password }}"
         validate_certs: false
       delegate_to: localhost
-      register: do_result3
-
-    - name: running state
-      ansible.builtin.uri:
-        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config/running-state"
-        method: PATCH
-        status_code: 
-          - 200
-          - 202
-          - 204
-        timeout: 300
-        body_format: json
-        headers:
-          Content-Type: "application/yang-data+json"
-        body:
-          running-state: "provisioned"
-        force_basic_auth: true
-        user: "{{ ansible_user }}"
-        password: "{{ ansible_password }}"
-        validate_certs: false
-      delegate_to: localhost
-      register: do_result
 
     - name: mgmt-vlan
       ansible.builtin.uri:
@@ -79,10 +57,27 @@
         password: "{{ ansible_password }}"
         validate_certs: false
       delegate_to: localhost
-      register: do_result
 
-    - debug:
-        var: do_result
+    - name: running state
+      ansible.builtin.uri:
+        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config/running-state"
+        method: PATCH
+        status_code: 
+          - 200
+          - 202
+          - 204
+        timeout: 300
+        body_format: json
+        headers:
+          Content-Type: "application/yang-data+json"
+        body:
+          running-state: "deployed"
+        force_basic_auth: true
+        user: "{{ ansible_user }}"
+        password: "{{ ansible_password }}"
+        validate_certs: false
+      delegate_to: localhost
+      register: do_result
 
     - name: after
       ansible.builtin.uri:
@@ -98,7 +93,3 @@
         password: "{{ ansible_password }}"
         validate_certs: false
       delegate_to: localhost
-      register: do_result2
-
-    - debug:
-        var: do_result2
