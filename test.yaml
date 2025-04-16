@@ -24,4 +24,4 @@
 
     - debug:
         var: item
-      with_items: inventory.vlans
+      with_items: "{{ inventory.vlans }}"
