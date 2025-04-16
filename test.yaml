@@ -22,7 +22,7 @@
 
   tasks:
 
-    - name: Configure F5 via DO with Device Certs Tagged Networks
+    - name: before
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}"
         method: GET
@@ -38,7 +38,7 @@
       delegate_to: localhost
       register: do_result3
 
-    - name: Configure F5 via DO with Device Certs Tagged Networks
+    - name: running state
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config/running-state"
         method: PATCH
@@ -50,7 +50,7 @@
         headers:
           Content-Type: "application/yang-data+json"
         body:
-          f5-running-state: "provisioned"
+          running-state: "provisioned"
         force_basic_auth: true
         user: "{{ ansible_user }}"
         password: "{{ ansible_password }}"
@@ -58,7 +58,7 @@
       delegate_to: localhost
       register: do_result
 
-    - name: Configure F5 via DO with Device Certs Tagged Networks
+    - name: mgmt-vlan
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config/f5-tenant-mgmt-vlan:mgmt-vlan"
         method: PATCH
@@ -81,7 +81,7 @@
     - debug:
         var: do_result
 
-    - name: Configure F5 via DO with Device Certs Tagged Networks
+    - name: after
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}"
         method: GET
