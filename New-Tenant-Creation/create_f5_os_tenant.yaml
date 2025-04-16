@@ -43,9 +43,9 @@
 
   tasks:
 
-    - name: debug output
-      ansible.builtin.debug:
-        msg: "{{ memory |int }}"
+    # - name: debug output
+    #   ansible.builtin.debug:
+    #     msg: "{{ memory |int }}"
 
     - name: Import Information From JSON File
       ansible.builtin.set_fact:
@@ -53,9 +53,9 @@
       with_fileglob: "/tmp/inventory_*.json"
       delegate_to: localhost
 
-    - name: debug output
-      ansible.builtin.debug:
-        var: inventory
+    # - name: debug output
+    #   ansible.builtin.debug:
+    #     var: inventory
 
     - name: Collect interface and vlan information on F5OS device
       f5networks.f5os.f5os_device_info:
@@ -64,9 +64,9 @@
           - vlans 
       register: tenant_info
 
-    - name: debug output
-      ansible.builtin.debug:
-        var: tenant_info
+    # - name: debug output
+    #   ansible.builtin.debug:
+    #     var: tenant_info
 
     - name: Create F5 Tenant
       f5networks.f5os.f5os_tenant:
