@@ -45,6 +45,7 @@
         status_code: 
           - 200
           - 202
+          - 204
         timeout: 300
         body_format: json
         headers:
@@ -65,8 +66,9 @@
         status_code: 
           - 200
           - 202
+          - 204
         timeout: 300
-        return_content: true
+        body_format: json
         headers:
           Content-Type: "application/yang-data+json"
         body:
