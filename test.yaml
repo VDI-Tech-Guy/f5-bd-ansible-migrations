@@ -47,7 +47,7 @@
       delegate_to: localhost
 
     - name: Breate VLANs From Old Confiruation
-      f5os_vlan:
+      f5networks.f5os.f5os_vlan:
         name: "vl{{item.tag}}"
         vlan_id: "{{item.tag}}"
       with_items: "{{ inventory.vlans }}"
