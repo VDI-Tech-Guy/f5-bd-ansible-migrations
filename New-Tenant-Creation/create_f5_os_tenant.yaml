@@ -103,3 +103,8 @@
         validate_certs: false
       when: mgmt_vlan is defined
       delegate_to: localhost
+
+    - name: Start F5 Tenant
+      f5networks.f5os.f5os_tenant:
+        name: '{{ inventory.devices[0].hostname.split(".")[0] }}'
+        running_state: deployed
