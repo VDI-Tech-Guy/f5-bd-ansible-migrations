@@ -23,5 +23,6 @@
       delegate_to: localhost
 
     - debug:
-        var: item
+        var: item.tag
       with_items: "{{ inventory.vlans }}"
+      when: '"yes" in item.interfaces[0].tagged'
