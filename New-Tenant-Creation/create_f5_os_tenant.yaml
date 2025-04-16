@@ -36,7 +36,7 @@
     mgmt_ip: 192.170.14.85
     mgmt_sn_cidr: 24
     mgmt_gw: 192.170.14.1
-    mgmt_vlan: 3007
+    mgmt_vlan: 3014
 
 
   tasks:
