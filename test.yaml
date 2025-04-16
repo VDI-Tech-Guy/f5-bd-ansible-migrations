@@ -46,7 +46,6 @@
           - 200
           - 202
         timeout: 300
-        return_content: true
         headers:
           Content-Type: "application/yang-data+json"
         body:
