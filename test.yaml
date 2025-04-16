@@ -16,13 +16,39 @@
         flat: yes
       with_items: "{{ file_2_fetch.files }}"
 
+
+- name: Create F5OS Tenant
+  hosts: velos
+  connection: httpapi
+  gather_facts: false
+
+  vars:
+    ansible_httpapi_password: "{{ ansible_password }}"
+    ansible_network_os: "f5networks.f5os.f5os"
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_use_proxy: false
+    ansible_httpapi_validate_certs: false
+    ansible_httpapi_port: "{{ server_port }}"
+    ansible_command_timeout: 1800
+    persistent_log_messages: tenant_info.true
+
+  tasks:
+
     - name: Import Information From JSON File
       ansible.builtin.set_fact:
         inventory: "{{ lookup('file',item) | from_json }}"
       with_fileglob: "/tmp/inventory_*.json"
       delegate_to: localhost
 
-    - debug:
+    - ansible.builtin.debug:
         var: item.tag
+      with_items: "{{ inventory.vlans }}"
+      when: '"yes" in item.interfaces[0].tagged'
+      delegate_to: localhost
+
+    - name: Breate VLANs From Old Confiruation
+      f5os_vlan:
+        name: "vl{{item.tag}}"
+        vlan_id: "{{item.tag}}"
       with_items: "{{ inventory.vlans }}"
       when: '"yes" in item.interfaces[0].tagged'
