@@ -85,7 +85,7 @@
         mgmt_ip: "{{ mgmt_ip }}"
         mgmt_prefix: "{{ mgmt_sn_cidr }}"
         mgmt_gateway: "{{ mgmt_gw }}"
-        vlans: "{{ tenant_info.vlans[0].vlan_id }}"
+        vlans: "{{ vlan_list }}"
         cpu_cores: "{{ cpu_cores }}"
         memory: "{{ memory |int }}"
         cryptos: enabled
@@ -99,6 +99,8 @@
         status_code: 
           - 200
           - 201
+          - 202 
+          - 204
         timeout: 300
         body_format: json
         headers:
