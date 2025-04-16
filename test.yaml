@@ -40,8 +40,8 @@
 
     - name: Configure F5 via DO with Device Certs Tagged Networks
       ansible.builtin.uri:
-        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config"
-        method: POST
+        url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}/config/f5-tenant-mgmt-vlan:mgmt-vlan"
+        method: PATCH
         status_code: 
           - 200
           - 202
