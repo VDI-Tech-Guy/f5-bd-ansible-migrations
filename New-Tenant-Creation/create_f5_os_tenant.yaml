@@ -1,5 +1,4 @@
 ---
-
 - name: Copy Inventory File For Tenant Creation
   hosts: bastion-backup
   tasks:
@@ -16,7 +15,6 @@
         dest: /tmp/
         flat: yes
       with_items: "{{ file_2_fetch.files }}"
-
 
 - name: Create F5OS Tenant
   hosts: velos
