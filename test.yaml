@@ -22,6 +22,14 @@
 
   tasks:
 
+
+    - name: Collect interface and vlan information on F5OS device
+      f5networks.f5os.f5os_device_info:
+        gather_subset:
+          - tenant-images
+          - vlans 
+      register: tenant_info
+      
     - name: before
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ tenant_name }}"

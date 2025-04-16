@@ -29,7 +29,7 @@
     ansible_httpapi_use_ssl: true
     ansible_httpapi_use_proxy: false
     ansible_httpapi_validate_certs: false
-    ansible_httpapi_port: 8888
+    ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 1800
     persistent_log_messages: tenant_info.true
     partition_name: DemoPartition
