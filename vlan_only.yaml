@@ -90,6 +90,7 @@
         password: "{{ ansible_password }}"
         validate_certs: false
       when: mgmt_vlan is defined
+      changed_when: response.status == 201
       delegate_to: localhost
 
     - name: GET Management-VLAN if Defined
