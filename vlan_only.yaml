@@ -31,7 +31,6 @@
     ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 1800
     persistent_log_messages: tenant_info.true
-    tenant
 
   tasks:
 
