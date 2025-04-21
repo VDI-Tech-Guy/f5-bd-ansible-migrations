@@ -43,7 +43,7 @@
       delegate_to: localhost
 
     - name: Restore UCS
-      f5networks.f5_bigip.bigip_ucs_fetch:
+      f5networks.f5_bigip.bigip_ucs:
         src: "{{ UCS_fetch.files[0].path }}"
         dest: "{{ UCS_fetch.files[0].path }}"
         no_platform_check: true
