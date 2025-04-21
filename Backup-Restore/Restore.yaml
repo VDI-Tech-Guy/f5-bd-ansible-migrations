@@ -38,6 +38,7 @@
         paths: /tmp/
         patterns: "*.ucs"
       register: UCS_fetch
+      delegate_to: localhost
 
     - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
       ansible.builtin.copy:
