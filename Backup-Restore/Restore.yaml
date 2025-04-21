@@ -36,7 +36,7 @@
   tasks:
 
     - name: Copy from Remote to Local location
-      copy:
+      ansible.builtin.copy:
        src: "{{ item }}"
        dest: "{{ item }}"
       with_fileglob: "/tmp/*.ucs"
