@@ -1,0 +1,89 @@
+---
+
+- name: Copy Inventory File For Tenant Creation
+  hosts: bastion-backup
+  tasks:
+
+    - name: use find to get the files list which you want to copy/fetch
+      ansible.builtin.find: 
+        paths: /tmp/
+        patterns: "*.ucs"
+      register: UCS_fetch
+
+    - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: /tmp/
+        flat: yes
+      with_items: "{{ UCS_fetch.files }}"
+
+
+- name: Restore UCS to Destination
+  hosts: lb
+  connection: httpapi
+  gather_facts: false
+
+  vars:
+    ansible_httpapi_password: "{{ ansible_password }}"
+    ansible_network_os: f5networks.f5_bigip.bigip
+    ansible_httpapi_use_ssl: yes
+    ansible_httpapi_validate_certs: no
+    ansible_httpapi_port: "{{ server_port }}"
+    ansible_command_timeout: 300
+    ansible_httpapi_use_proxy: no
+
+
+  tasks:
+
+    - name: Copy from Remote to Local location
+      copy:
+       src: "{{ item }}"
+       dest: "{{ item }}"
+      with_fileglob: "/tmp/*.ucs"
+
+    - name: Import UCS File
+      ansible.builtin.set_fact:
+        ucs_filename: "{{ item }}"
+      with_fileglob: "/tmp/*.ucs"
+
+#     - name: Create a new UCS
+#       f5networks.f5_bigip.bigip_ucs_fetch:
+#         src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
+#         dest: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
+#       register: task
+
+#     - name: Debug task
+#       ansible.builtin.debug:
+#         var: task
+
+#     - name: Wait for Backup Task to complete
+#       ansible.builtin.uri:
+#         url: "https://{{ ansible_host }}/mgmt/tm/task/sys/ucs/{{ task.task_id }}"
+#         method: GET
+#         return_content: true
+#         status_code: 200
+#         force_basic_auth: true
+#         user: "{{ ansible_user }}"
+#         password: "{{ ansible_password }}"
+#         validate_certs: false
+#       register: atc_Backup_status
+#       until: atc_Backup_status is success
+#       retries: 30
+#       delay: 30
+#       delegate_to: localhost
+#       when: task.changed
+
+#     - name: Download an existing UCS
+#       f5networks.f5_bigip.bigip_ucs_fetch:
+#         src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
+#         dest: "/tmp/{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
+
+
+# - name: Ansible Copy File
+#   hosts: bastion-backup
+#   tasks:
+#     - name: Copy from Local to Remote location
+#       copy:
+#        src: "{{ item }}"
+#        dest: "{{ item }}"
+#       with_fileglob: "/tmp/*.ucs"
