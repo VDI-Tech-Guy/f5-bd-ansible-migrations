@@ -20,6 +20,8 @@
 
 - name: Restore UCS to Destination
   hosts: velos-lb
+  connection: httpapi
+  gather_facts: false
 
   vars:
     ansible_httpapi_password: "{{ ansible_password }}"
@@ -40,55 +42,31 @@
       register: UCS_fetch
       delegate_to: localhost
 
-    - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
-      ansible.builtin.copy:
-        src: "{{ item.path }}"
-        dest: "{{ item.path }}" 
-      with_items: "{{ UCS_fetch.files }}"
+    - name: Restore UCS
+      f5networks.f5_bigip.bigip_ucs_fetch:
+        src: "{{ UCS_fetch.files[0].path }}"
+        dest: "{{ UCS_fetch.files[0].path }}"
+        no_platform_check: true
+        no_license: true
+      register: restore_task
 
-    - name: Import UCS File
-      ansible.builtin.set_fact:
-        ucs_filename: "{{ item }}"
-      with_fileglob: "/tmp/*.ucs"
+    - name: Debug restore_task
+      ansible.builtin.debug:
+        var: restore_task
 
-#     - name: Create a new UCS
-#       f5networks.f5_bigip.bigip_ucs_fetch:
-#         src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
-#         dest: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
-#       register: task
-
-#     - name: Debug task
-#       ansible.builtin.debug:
-#         var: task
-
-#     - name: Wait for Backup Task to complete
-#       ansible.builtin.uri:
-#         url: "https://{{ ansible_host }}/mgmt/tm/task/sys/ucs/{{ task.task_id }}"
-#         method: GET
-#         return_content: true
-#         status_code: 200
-#         force_basic_auth: true
-#         user: "{{ ansible_user }}"
-#         password: "{{ ansible_password }}"
-#         validate_certs: false
-#       register: atc_Backup_status
-#       until: atc_Backup_status is success
-#       retries: 30
-#       delay: 30
-#       delegate_to: localhost
-#       when: task.changed
-
-#     - name: Download an existing UCS
-#       f5networks.f5_bigip.bigip_ucs_fetch:
-#         src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
-#         dest: "/tmp/{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
-
-
-# - name: Ansible Copy File
-#   hosts: bastion-backup
-#   tasks:
-#     - name: Copy from Local to Remote location
-#       copy:
-#        src: "{{ item }}"
-#        dest: "{{ item }}"
-#       with_fileglob: "/tmp/*.ucs"
+    - name: Wait for Backup Task to complete
+      ansible.builtin.uri:
+        url: "https://{{ ansible_host }}/mgmt/tm/task/sys/ucs/{{ restore_task.task_id }}"
+        method: GET
+        return_content: true
+        status_code: 200
+        force_basic_auth: true
+        user: "{{ ansible_user }}"
+        password: "{{ ansible_password }}"
+        validate_certs: false
+      register: atc_Backup_status
+      until: atc_Backup_status is success
+      retries: 30
+      delay: 30
+      delegate_to: localhost
+      when: task.changed
