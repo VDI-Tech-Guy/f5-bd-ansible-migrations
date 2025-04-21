@@ -69,24 +69,10 @@
       args:
         executable: /bin/bash
 
-    - name: Replace net stp /Common/cist block with new stp and trunk config
+    - name: Replace net stp /Common/cist block in-place
       shell: |
         awk '
-        BEGIN { skip = 0 }
         /^net stp \/Common\/cist {/ {
-          skip = 1
-          next
-        }
-        skip {
-          if ($0 ~ /^}/) {
-            skip = 0
-          }
-          next
-        }
-        {
-          print
-        }
-        END {
           print "net stp /Common/cist { }"
           print "net trunk F5OS_INTERNAL {"
           print "    distribution-hash src-dst-mac"
@@ -98,8 +84,19 @@
           print "    stp disabled"
           print "    type ha-only"
           print "}"
+          skip = 1
+          next
         }
-        ' /tmp/config.tmp > /tmp/config2.tmp
+        skip {
+          if ($0 ~ /^}/) {
+            skip = 0
+          }
+          next
+        }
+        {
+          print
+        }' /tmp/config.tmp > /tmp/config2.tmp
+
       args:
         executable: /bin/bash
 
