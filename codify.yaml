@@ -68,6 +68,41 @@
         }' /tmp/test.conf > /tmp/config.tmp 
       args:
         executable: /bin/bash
+
+    - name: Replace net stp /Common/cist block with new stp and trunk config
+      shell: |
+        awk '
+        BEGIN { skip = 0 }
+        /^net stp \/Common\/cist {/ {
+          skip = 1
+          next
+        }
+        skip {
+          if ($0 ~ /^}/) {
+            skip = 0
+          }
+          next
+        }
+        {
+          print
+        }
+        END {
+          print "net stp /Common/cist { }"
+          print "net trunk F5OS_INTERNAL {"
+          print "    distribution-hash src-dst-mac"
+          print "    interfaces {"
+          print "        1.1.vqf-cc.1"
+          print "        2.1.vqf-cc.2"
+          print "    }"
+          print "    lacp-mode passive"
+          print "    stp disabled"
+          print "    type ha-only"
+          print "}"
+        }
+        ' /tmp/config.tmp > /tmp/config2.tmp
+      args:
+        executable: /bin/bash
+
 # && mv /tmp/config.tmp /path/to/config.txt
 
     # - name: Remove Interface Junk
@@ -82,7 +117,7 @@
 
     - name: output test.conf
       ansible.builtin.command: 
-        cmd: "cat /tmp/config.tmp"
+        cmd: "cat /tmp/config2.tmp"
   
     # - name: List Directory
     #   ansible.builtin.find:
