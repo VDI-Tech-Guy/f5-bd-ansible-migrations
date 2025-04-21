@@ -34,6 +34,12 @@
       args:
         executable: /bin/bash
 
+    - name: Change VLAN 102 to proper naming
+      ansible.builtin.shell: |
+        sed -i 's|/Common/VL102|/Common/vl102|' /tmp/test.conf
+      args:
+        executable: /bin/bash
+
     - name: output test.conf
       ansible.builtin.command: 
         cmd: "cat /tmp/test.conf"
