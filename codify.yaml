@@ -26,6 +26,7 @@
     - name: Unzip UCS File 
       ansible.builtin.command: 
         cmd: "tar xfvz {{ item.path }} -C /tmp/ucs_fix"
+      with_items: "{{ UCS_fetch.files }}"
 
     - name: List Directory
       ansible.builtin.find:
