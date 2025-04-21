@@ -44,10 +44,11 @@
 
     - name: Restore UCS
       f5networks.f5_bigip.bigip_ucs:
-        src: "{{ UCS_fetch.files[0].path }}"
-        dest: "{{ UCS_fetch.files[0].path }}"
+        ucs: "{{ UCS_fetch.files[0].path }}"
         no_platform_check: true
         no_license: true
+        state: installed
+        timeout: 300
       register: restore_task
 
     - name: Debug restore_task
