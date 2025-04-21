@@ -19,8 +19,8 @@
 
 
 - name: Restore UCS to Destination
-  hosts: lb
-  connection: httpapi
+  hosts: velos-lb
+  connection: local
   gather_facts: false
 
   vars:
