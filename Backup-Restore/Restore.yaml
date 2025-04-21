@@ -42,8 +42,8 @@
 
     - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
       ansible.builtin.copy:
-        src: "{{ item }}"
-        dest: "{{ item }}" 
+        src: "{{ item.path }}"
+        dest: "{{ item.path }}" 
       with_items: "{{ UCS_fetch.files }}"
 
     - name: Import UCS File
