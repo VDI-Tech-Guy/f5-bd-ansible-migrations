@@ -46,19 +46,17 @@
           h
           :a
           n
-          /^ *tag /{
-            H
+          /tag [0-9]+/{
+            s/.*tag ([0-9]+).*/\1/
             x
-            s/\n.*tag / {\n    tag /
-            s/.*(net vlan [^ ]+).*/\1/
-            s/$/ {/
+            s/^net vlan ([^ ]+).*/net vlan \1 {\n    tag '"\0"'\n}/
             p
             d
           }
           /^}/!ba
           d
         }
-        /^net vlan /, /^}/d' /tmp/test.conf
+        /^net vlan /,/^}/d' /tmp/test.conf
       args:
         executable: /bin/bash
 
