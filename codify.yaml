@@ -29,8 +29,10 @@
       with_items: "{{ UCS_fetch.files }}"
 
     - name: Remove Interface blocks
-      ansible.builtin.command: 
-        cmd: "sed '/^net interface/,/^}/d' /tmp/ucs_fix/config/bigip_base.conf > /tmp/test.conf"
+      ansible.builtin.shell: |
+        sed '/^net interface/,/^}/d' /tmp/ucs_fix/config/bigip_base.conf > /tmp/test.conf
+      args:
+        executable: /bin/bash
 
     - name: output test.conf
       ansible.builtin.command: 
