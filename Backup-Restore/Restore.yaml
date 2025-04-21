@@ -20,8 +20,6 @@
 
 - name: Restore UCS to Destination
   hosts: velos-lb
-  connection: local
-  gather_facts: false
 
   vars:
     ansible_httpapi_password: "{{ ansible_password }}"
@@ -43,8 +41,8 @@
 
     - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
       ansible.builtin.copy:
-        src: "{{ item.path }}"
-        dest: /tmp/
+        src: "{{ item }}"
+        dest: "{{ item }}" 
       with_items: "{{ UCS_fetch.files }}"
 
     - name: Import UCS File
