@@ -35,11 +35,18 @@
 
   tasks:
 
-    - name: Copy from Remote to Local location
-      ansible.builtin.copy:
-       src: "{{ item }}"
-       dest: "{{ item }}"
-      with_fileglob: "/tmp/*.ucs"
+    - name: use find to get the files list which you want to copy/fetch
+      ansible.builtin.find: 
+        paths: /tmp/
+        patterns: "*.ucs"
+      register: UCS_fetch
+
+    - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: /tmp/
+        flat: yes
+      with_items: "{{ UCS_fetch.files }}"
 
     - name: Import UCS File
       ansible.builtin.set_fact:
