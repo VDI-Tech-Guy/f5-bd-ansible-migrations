@@ -28,11 +28,19 @@
         cmd: "tar xfvz {{ item.path }} -C /tmp/ucs_fix"
       with_items: "{{ UCS_fetch.files }}"
 
-    - name: List Directory
-      ansible.builtin.find:
-        paths: /tmp/ucs_fix
-        recurse: yes
-        file_type: directory
+    - name: Remove Interface blocks
+      ansible.builtin.command: 
+        cmd: "sed '/^net interface/,/^}/d' /tmp/ucs_fix/config/bigip_base.conf > /tmp/test.conf"
+
+    - name: output test.conf
+      ansible.builtin.command: 
+        cmd: "cat /tmp/test.conf"
+  
+    # - name: List Directory
+    #   ansible.builtin.find:
+    #     paths: /tmp/ucs_fix
+    #     recurse: yes
+    #     file_type: directory
 
     # - name: UnZIP UCS File for Config Modification
     #   ansible.builtin.unarchive:
