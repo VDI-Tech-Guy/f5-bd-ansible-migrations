@@ -40,11 +40,33 @@
       args:
         executable: /bin/bash
 
-    - name: Remove Interface Junk
+    - name: Simplify net vlan blocks to include only tag line
       ansible.builtin.shell: |
-        sed -n '/^net vlan/{h; n; :a; /tag [0-9]\+/{H; x; s/\n.*tag/\ntag/;p; b}; n; ba}' /tmp/test.conf
+        sed -i -E '/^net vlan /{
+          h
+          :a
+          n
+          /^ *tag /{
+            H
+            x
+            s/\n.*tag / {\n    tag /
+            s/.*(net vlan [^ ]+).*/\1/
+            s/$/ {/
+            p
+            d
+          }
+          /^}/!ba
+          d
+        }
+        /^net vlan /, /^}/d' /tmp/test.conf
       args:
         executable: /bin/bash
+
+    # - name: Remove Interface Junk
+    #   ansible.builtin.shell: |
+    #     sed -n '/^net vlan/{h; n; :a; /tag [0-9]\+/{H; x; s/\n.*tag/\ntag/;p; b}; n; ba}' /tmp/test.conf
+    #   args:
+    #     executable: /bin/bash
         # sed -n '/^net vlan/,/^}/{^net vlan/ {h; n; next}^ *tag / {H; x; s/\n.*tag/tag/; p}}' /tmp/test.conf  
         # sed -n '/^net vlan/{h; n; :a; /tag [0-9]\+/{H; x; s/\n.*tag/\ntag/;p; b}; n; ba}' /tmp/test.conf
         # sed -n '/^net vlan/{h;:a;n;/tag [0-9]\+/{s/.*tag /    tag /;H};/}/!ba;x;s/\n.*tag/\n/;s/\n/ /;s/$/ }/;p}' /tmp/test.conf
