@@ -71,6 +71,17 @@
       ansible.builtin.debug:
         var: master_key_output.stdout[0]
 
+    - name: Get Master OLD Key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "f5mku -K"
+        provider: "{{ provider }}"
+      register: old_key
+
+    - name: debug master key old_key
+      ansible.builtin.debug:
+        var: old_key
+
     - name: Set Master Key
       f5networks.f5_modules.bigip_command:
         commands: >
