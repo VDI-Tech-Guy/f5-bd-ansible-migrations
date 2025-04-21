@@ -40,6 +40,12 @@
       args:
         executable: /bin/bash
 
+    - name: Change VLAN 3004 to proper naming
+      ansible.builtin.shell: |
+        sed -i 's|/Common/VL3004|/Common/vl3004|' /tmp/test.conf
+      args:
+        executable: /bin/bash
+
     - name: Simplify net vlan blocks to only include tag
       shell: |
         awk '
