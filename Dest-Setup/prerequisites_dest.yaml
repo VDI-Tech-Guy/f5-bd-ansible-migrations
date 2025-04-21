@@ -105,3 +105,13 @@
         provider: "{{ provider }}"
         save: true
           
+    - name: What is the Current Key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "f5mku -K"
+        provider: "{{ provider }}"
+      register: cur_key
+
+    - name: debug master key cur_key
+      ansible.builtin.debug:
+        var: cur_key
