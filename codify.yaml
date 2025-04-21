@@ -40,7 +40,7 @@
       args:
         executable: /bin/bash
 
-    - name: Reduce net vlan blocks to only tag line
+    - name: Reduce net vlan blocks to only tag line (fixed braces)
       ansible.builtin.shell: |
         awk '
           BEGIN { in_vlan = 0; vlan_name = ""; tag = "" }
@@ -56,7 +56,9 @@
           }
           in_vlan && /^\}/ {
             if (tag != "") {
-              print vlan_name " {\n    tag " tag "\n}"
+              print vlan_name
+              print "    tag " tag
+              print "}"
             }
             in_vlan = 0
             next
