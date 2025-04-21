@@ -1,0 +1,43 @@
+---
+
+- name: Copy Inventory File For Tenant Creation
+  hosts: bastion-backup
+  tasks:
+
+    - name: use find to get the files list which you want to copy/fetch
+      ansible.builtin.find: 
+        paths: /tmp/
+        patterns: "*.ucs"
+      register: UCS_fetch
+
+    - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: /tmp/
+        flat: yes
+      with_items: "{{ UCS_fetch.files }}"
+
+    - name: Create a Temp Directory
+      ansible.builtin.file:
+        path: /tmp/ucs_fix
+        state: directory
+        mode: '0755'
+
+    - name: Unzip UCS File 
+      ansible.builtin.command: 
+        cmd: "tar xfvz {{ item.path }} -C /tmp/ucs_fix"
+
+    - name: List Directory
+      ansible.builtin.find:
+        paths: /tmp/ucs_fix
+        recurse: yes
+        file_type: directory
+
+    # - name: UnZIP UCS File for Config Modification
+    #   ansible.builtin.unarchive:
+    #     src: "{{ item.path }}"
+    #     dest: /tmp/ucs_fix
+    #     extra_opts:
+    #     - --transform
+    #     - s/^xxx/yyy/
+    #   with_items: "{{ UCS_fetch.files }}"
