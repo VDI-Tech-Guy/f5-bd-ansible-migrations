@@ -100,6 +100,10 @@
           sleep 1;'"
         provider: "{{ provider }}"
 
+    - name: Pause 60 Seconds after setting Key
+      ansible.builtin.pause:
+         minutes: 1
+  
     - name: SAVE RUNNING CONFIG ON BIG-IP
       f5networks.f5_modules.bigip_config:
         provider: "{{ provider }}"
