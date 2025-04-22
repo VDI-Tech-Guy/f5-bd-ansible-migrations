@@ -51,7 +51,8 @@
     - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
       f5networks.f5_bigip.bigip_command:
         commands:
-          - "tmsh load sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
+          - "tmsh load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
+        timeout: 300
       register: restore_task
       ignore_errors: true
 
