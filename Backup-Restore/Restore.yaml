@@ -48,14 +48,17 @@
         state: present
       register: restore_task_upload
 
-    - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
-      f5networks.f5_bigip.bigip_command:
-        commands: show sys version
-        use_ssh: true
-      register: restore_task
-      ignore_errors: true
+    # - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
+    #   f5networks.f5_bigip.bigip_command:
+    #     commands: show sys version
+    #     use_ssh: true
+    #   register: restore_task
+    #   ignore_errors: true
 
           #- "load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
+
+    - name: Run uptime command
+      ansible.builtin.command: uptime
 
     - name: Debug restore_task
       ansible.builtin.debug:
