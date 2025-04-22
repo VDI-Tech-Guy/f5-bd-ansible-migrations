@@ -58,25 +58,52 @@
           #- "load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
 
 
-- name: Run a command on remote host via SSH
+- name: Run Restore via SSH (Due to API Restarts)
   hosts: velos-lb
   become: false  # set to true if you need sudo
   tasks:
 
-    - name: use find to get the files list which you want to copy/fetch
+    - name: Find Local UCS File Name
       ansible.builtin.find: 
         paths: /tmp/
         patterns: "*.ucs"
       register: UCS_fetch
       delegate_to: localhost
 
-    - name: Run uptime command
+    - name: Run Restore Command with Platform-Migrate
       ansible.builtin.command: "tmsh load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
       register: restore_task
 
-    - name: Debug restore_task
+    - name: Debug Output of Restore
       ansible.builtin.debug:
         var: restore_task
+
+
+- name: Wait for Restored F5 to Come Online
+  hosts: velos-lb
+  connection: httpapi
+  gather_facts: false
+
+  vars:
+    ansible_httpapi_password: "{{ ansible_password }}"
+    ansible_network_os: f5networks.f5_bigip.bigip
+    ansible_httpapi_use_ssl: yes
+    ansible_httpapi_validate_certs: no
+    ansible_httpapi_port: "{{ server_port }}"
+    ansible_command_timeout: 300
+    ansible_httpapi_use_proxy: no
+  tasks:
+
+    - name: Get Failover State - Module
+      f5networks.f5_bigip.bigip_command:
+        commands: show sys failover
+      register: f5_online
+      until: 
+        - "'Active' in f5_online.stdout[0]"
+        - "'green' in f5_online.stdout[0]"
+      retries: 40
+      delay: 30
+
 
     # - name: Wait for Backup Task to complete
     #   ansible.builtin.uri:
