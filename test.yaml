@@ -16,7 +16,7 @@
 
     - name: Get Failover State - Module
       f5networks.f5_bigip.bigip_command:
-        commands: show sys failover
+        commands: show cm failover-status
       register: f5_online
       until: 
         - "'Active' in f5_online.stdout[0]"
