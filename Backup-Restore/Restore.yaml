@@ -99,6 +99,9 @@
         commands: show cm failover-status
       register: f5_online
       until: 
+        - f5_online is defined
+        - "'stdout' in f5_online"
+        - f5_online.stdout is iterable and f5_online.stdout | length > 0
         - "'ACTIVE' in f5_online.stdout[0]"
         - "'green' in f5_online.stdout[0]"
       retries: 30
