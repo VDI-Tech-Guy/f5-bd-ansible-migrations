@@ -63,8 +63,15 @@
   become: false  # set to true if you need sudo
   tasks:
 
+    - name: use find to get the files list which you want to copy/fetch
+      ansible.builtin.find: 
+        paths: /tmp/
+        patterns: "*.ucs"
+      register: UCS_fetch
+      delegate_to: localhost
+
     - name: Run uptime command
-      ansible.builtin.command: hostname
+      ansible.builtin.command: "tmsh load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate""
       register: restore_task
 
     - name: Debug restore_task
