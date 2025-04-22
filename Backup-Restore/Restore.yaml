@@ -64,7 +64,7 @@
   tasks:
 
     - name: Run uptime command
-      ansible.builtin.command: uptime
+      ansible.builtin.command: hostname
       register: restore_task
 
     - name: Debug restore_task
