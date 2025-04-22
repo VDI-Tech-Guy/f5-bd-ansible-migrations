@@ -94,30 +94,12 @@
     ansible_httpapi_use_proxy: no
   tasks:
 
-    - name: Get Failover State - Module
+    - name: Wait For Restore to Complete and system to become Active (30 Minutes of Retries)
       f5networks.f5_bigip.bigip_command:
-        commands: show sys failover
+        commands: show cm failover-status
       register: f5_online
       until: 
-        - "'Active' in f5_online.stdout[0]"
+        - "'ACTIVE' in f5_online.stdout[0]"
         - "'green' in f5_online.stdout[0]"
-      retries: 40
-      delay: 30
-
-
-    # - name: Wait for Backup Task to complete
-    #   ansible.builtin.uri:
-    #     url: "https://{{ ansible_host }}/mgmt/tm/task/sys/ucs/{{ restore_task.task_id }}"
-    #     method: GET
-    #     return_content: true
-    #     status_code: 200
-    #     force_basic_auth: true
-    #     user: "{{ ansible_user }}"
-    #     password: "{{ ansible_password }}"
-    #     validate_certs: false
-    #   register: atc_Backup_status
-    #   until: atc_Backup_status is success
-    #   retries: 30
-    #   delay: 30
-    #   delegate_to: localhost
-    #   when: task.changed
+      retries: 30
+      delay: 60
