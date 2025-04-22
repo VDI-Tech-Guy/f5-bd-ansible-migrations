@@ -77,7 +77,7 @@
           run /util bash -c "f5mku -K"
         provider: "{{ provider }}"
       register: old_key
-      until: f5_cmd_output.stdout[0] | trim | length > 0
+      until: old_key.stdout[0] | trim | length > 0
       retries: 10
       delay: 10
 
