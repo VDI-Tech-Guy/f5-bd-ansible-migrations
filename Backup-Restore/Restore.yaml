@@ -51,7 +51,7 @@
     - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
       bigip_command:
         commands:
-          - tmsh load sys ucs "{{ UCS_fetch.files[0].path.split('/')[2] }}" platform-migrate
+          - "tmsh load sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} platform-migrate"
       register: restore_task
 
     - name: Debug restore_task
