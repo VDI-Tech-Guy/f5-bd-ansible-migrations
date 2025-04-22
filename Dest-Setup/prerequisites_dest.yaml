@@ -88,7 +88,7 @@
 
     - name: debug master key old_key
       ansible.builtin.debug:
-        var: old_key
+        var: f5_old_key
 
     - name: Set Master Key
       f5networks.f5_modules.bigip_command:
