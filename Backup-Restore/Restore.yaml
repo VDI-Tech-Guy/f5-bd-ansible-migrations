@@ -57,6 +57,12 @@
 
           #- "load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
 
+
+- name: Run a command on remote host via SSH
+  hosts: your_target_hosts
+  become: false  # set to true if you need sudo
+  tasks:
+  
     - name: Run uptime command
       ansible.builtin.command: uptime
       register: restore_task
