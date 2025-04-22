@@ -42,32 +42,35 @@
       register: UCS_fetch
       delegate_to: localhost
 
-    - name: Restore UCS
+    - name: Upload UCS
       f5networks.f5_bigip.bigip_ucs:
         ucs: "{{ UCS_fetch.files[0].path }}"
-        no_platform_check: true
-        no_license: true
-        state: installed
-        timeout: 300
+        state: present
+      register: restore_task_upload
+
+    - name: Run multiple commands on remote nodes
+      bigip_command:
+        commands:
+          - tmsh load sys ucs "{{ UCS_fetch.files[0].path.split('/')[2] }}" platform-migrate
       register: restore_task
 
     - name: Debug restore_task
       ansible.builtin.debug:
         var: restore_task
 
-    - name: Wait for Backup Task to complete
-      ansible.builtin.uri:
-        url: "https://{{ ansible_host }}/mgmt/tm/task/sys/ucs/{{ restore_task.task_id }}"
-        method: GET
-        return_content: true
-        status_code: 200
-        force_basic_auth: true
-        user: "{{ ansible_user }}"
-        password: "{{ ansible_password }}"
-        validate_certs: false
-      register: atc_Backup_status
-      until: atc_Backup_status is success
-      retries: 30
-      delay: 30
-      delegate_to: localhost
-      when: task.changed
+    # - name: Wait for Backup Task to complete
+    #   ansible.builtin.uri:
+    #     url: "https://{{ ansible_host }}/mgmt/tm/task/sys/ucs/{{ restore_task.task_id }}"
+    #     method: GET
+    #     return_content: true
+    #     status_code: 200
+    #     force_basic_auth: true
+    #     user: "{{ ansible_user }}"
+    #     password: "{{ ansible_password }}"
+    #     validate_certs: false
+    #   register: atc_Backup_status
+    #   until: atc_Backup_status is success
+    #   retries: 30
+    #   delay: 30
+    #   delegate_to: localhost
+    #   when: task.changed
