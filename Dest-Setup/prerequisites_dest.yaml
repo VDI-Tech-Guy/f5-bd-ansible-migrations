@@ -81,8 +81,8 @@
         commands: >
           run /util bash -c "f5mku -K"
         provider: "{{ provider }}"
-      register: old_key
-      until: old_key.stdout[0] | trim | length > 0
+      register: f5_old_key
+      until: f5_old_key.stdout[0] | trim | length > 0
       retries: 10
       delay: 10
 
@@ -95,8 +95,8 @@
         commands: >
           run /util bash -c "f5mku -r {{ master_key_output.stdout[0] }}"
         provider: "{{ provider }}"
-      register: f5_cmd_output
-      until: "'Rekeying' in f5_cmd_output.stdout[0]"
+      register: f5_re_key
+      until: "'Rekeying' in f5_re_key.stdout[0]"
       retries: 10
       delay: 10
 
@@ -111,8 +111,8 @@
           send -- {{ ansible_password }}\r;
           sleep 1;'"
         provider: "{{ provider }}"
-      register: f5_cmd_output_2
-      until: "'spawn' in f5_cmd_output_2.stdout[0]"
+      register: f5_set_key
+      until: "'spawn' in f5_set_key.stdout[0]"
       retries: 10
       delay: 10
   
