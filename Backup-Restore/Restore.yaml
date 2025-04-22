@@ -50,8 +50,8 @@
 
     - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
       f5networks.f5_bigip.bigip_command:
-        commands:
-          - show sys version
+        commands: >
+          run /util bash -c "tmsh show sys version"
         use_ssh: true
       register: restore_task
       ignore_errors: true
