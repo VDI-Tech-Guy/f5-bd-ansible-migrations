@@ -42,12 +42,12 @@
       register: UCS_fetch
       delegate_to: localhost
 
-    - name: Upload UCS
-      f5networks.f5_modules.bigip_ucs:
-        ucs: "{{ UCS_fetch.files[0].path }}"
-        state: present
-        provider: "{{ provider }}"
-      register: restore_task_upload
+    # - name: Upload UCS
+    #   f5networks.f5_modules.bigip_ucs:
+    #     ucs: "{{ UCS_fetch.files[0].path }}"
+    #     state: present
+    #     provider: "{{ provider }}"
+    #   register: restore_task_upload
 
     - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
       f5networks.f5_modules.bigip_command:
