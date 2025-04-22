@@ -50,12 +50,17 @@
       ignore_errors: true
 
     - name: "Change the user {{ ansible_user }} shell"
-      bigip_user:
+      f5networks.f5_modules.bigip_user:
         username_credential: "{{ ansible_user }}"
         shell: bash
         state: present
         provider: "{{ provider }}"
+      register: f5_shell
+      until: f5_shell.changed
+      retries: 10
+      delay: 10
       delegate_to: localhost
+
 
     - name: Import Master Key From JSON File
       ansible.builtin.set_fact:
