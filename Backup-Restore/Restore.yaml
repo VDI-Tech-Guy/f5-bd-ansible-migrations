@@ -59,10 +59,10 @@
 
 
 - name: Run a command on remote host via SSH
-  hosts: your_target_hosts
+  hosts: velos-lb
   become: false  # set to true if you need sudo
   tasks:
-  
+
     - name: Run uptime command
       ansible.builtin.command: uptime
       register: restore_task
