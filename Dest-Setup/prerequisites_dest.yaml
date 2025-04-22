@@ -77,6 +77,9 @@
           run /util bash -c "f5mku -K"
         provider: "{{ provider }}"
       register: old_key
+      until: f5_cmd_output.stdout[0] | trim | length > 0
+      retries: 10
+      delay: 10
 
     - name: debug master key old_key
       ansible.builtin.debug:
@@ -87,10 +90,10 @@
         commands: >
           run /util bash -c "f5mku -r {{ master_key_output.stdout[0] }}"
         provider: "{{ provider }}"
-
-    - name: Pause 1 Minute
-      ansible.builtin.pause:
-        minutes: 1
+      register: f5_cmd_output
+      until: "'ReKeying' in f5_cmd_output.stdout[0]"
+      retries: 10
+      delay: 10
 
     - name: Set crypto key
       f5networks.f5_modules.bigip_command:
@@ -103,15 +106,19 @@
           send -- {{ ansible_password }}\r;
           sleep 1;'"
         provider: "{{ provider }}"
-
-    - name: Pause 1 Minute after setting Key
-      ansible.builtin.pause:
-         minutes: 1
+      register: f5_cmd_output_2
+      until: "'spawn' in f5_cmd_output_2.stdout[0]"
+      retries: 10
+      delay: 10
   
     - name: SAVE RUNNING CONFIG ON BIG-IP
       f5networks.f5_modules.bigip_config:
         provider: "{{ provider }}"
         save: true
+      register: f5_save
+      until: f5_cmd_output.changed
+      retries: 10
+      delay: 10
           
     - name: What is the Current Key
       f5networks.f5_modules.bigip_command:
