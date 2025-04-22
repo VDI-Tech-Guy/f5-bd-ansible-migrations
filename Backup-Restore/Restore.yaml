@@ -59,6 +59,7 @@
 
     - name: Run uptime command
       ansible.builtin.command: uptime
+      register: restore_task
 
     - name: Debug restore_task
       ansible.builtin.debug:
