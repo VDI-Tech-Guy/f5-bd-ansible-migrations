@@ -78,6 +78,9 @@
       ansible.builtin.debug:
         var: restore_task
 
+    - name: Pause for 5 Minutes
+      ansible.builtin.pause:
+        minutes: 5
 
 - name: Wait for Restored F5 to Come Online
   hosts: velos-lb
@@ -94,7 +97,7 @@
     ansible_httpapi_use_proxy: no
   tasks:
 
-    - name: Wait For Restore to Complete and system to become Active (30 Minutes of Retries)
+    - name: Wait For Restore to Complete and system to become Active (15 Minutes of Retries)
       f5networks.f5_bigip.bigip_command:
         commands: show cm failover-status
       register: f5_online
@@ -105,4 +108,4 @@
         - "'ACTIVE' in f5_online.stdout[0]"
         - "'green' in f5_online.stdout[0]"
       retries: 30
-      delay: 60
+      delay: 30
