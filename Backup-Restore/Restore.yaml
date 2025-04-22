@@ -53,7 +53,6 @@
         commands:
           - "load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
         use_ssh: true
-      become: true
       register: restore_task
       ignore_errors: true
 
