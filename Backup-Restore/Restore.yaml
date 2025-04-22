@@ -20,19 +20,20 @@
 
 - name: Restore UCS to Destination
   hosts: velos-lb
-  connection: local
+  connection: httpapi
   gather_facts: false
 
+  vars:
+    ansible_httpapi_password: "{{ ansible_password }}"
+    ansible_network_os: f5networks.f5_bigip.bigip
+    ansible_httpapi_use_ssl: yes
+    ansible_httpapi_validate_certs: no
+    ansible_httpapi_port: "{{ server_port }}"
+    ansible_command_timeout: 300
+    ansible_httpapi_use_proxy: no
+
+
   tasks:
-    - name: Set Provider
-      ansible.builtin.set_fact:
-        provider:
-          server: "{{ ansible_host }}"
-          user: "{{ ansible_user }}"
-          password: "{{ ansible_password }}"
-          server_port: "{{ server_port }}"
-          no_f5_teem: yes
-          validate_certs: false
 
     - name: use find to get the files list which you want to copy/fetch
       ansible.builtin.find: 
@@ -42,22 +43,18 @@
       delegate_to: localhost
 
     - name: Upload UCS
-      f5networks.f5_modules.bigip_ucs:
+      f5networks.f5_bigip.bigip_ucs:
         ucs: "{{ UCS_fetch.files[0].path }}"
         state: present
-        provider: "{{ provider }}"
       register: restore_task_upload
-      delegate_to: localhost
 
     - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
-      f5networks.f5_modules.bigip_command:
-        commands: >
-          run /util bash -c "tmsh load sys ucs /var/local/ucs/{{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
-        provider: "{{ provider }}"
+      f5networks.f5_bigip.bigip_command:
+        commands: show sys version
+        use_ssh: true
       register: restore_task
       ignore_errors: true
-      delegate_to: localhost
-      
+
           #- "load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
 
     - name: Debug restore_task
