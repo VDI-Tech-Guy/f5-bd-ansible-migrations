@@ -88,6 +88,10 @@
           run /util bash -c "f5mku -r {{ master_key_output.stdout[0] }}"
         provider: "{{ provider }}"
 
+    - name: Pause 15 Seconds
+      ansible.builtin.pause:
+        seconds: 15
+
     - name: Set crypto key
       f5networks.f5_modules.bigip_command:
         commands: >
@@ -100,7 +104,7 @@
           sleep 1;'"
         provider: "{{ provider }}"
 
-    - name: Pause 60 Seconds after setting Key
+    - name: Pause 1 Minute after setting Key
       ansible.builtin.pause:
          minutes: 1
   

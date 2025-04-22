@@ -6,19 +6,19 @@
     - name: use find to get the files list which you want to copy/fetch
       ansible.builtin.find: 
         paths: /tmp/
-        patterns: "inventory_*.json"
-      register: file_2_fetch
+        patterns: "*.ucs"
+      register: UCS_fetch
 
-    - name: use fetch to get the files
+    - name: use fetch to get the files #NEED TO FIX FOR SPECIFIC UCS FILE 
       ansible.builtin.fetch:
         src: "{{ item.path }}"
         dest: /tmp/
         flat: yes
-      with_items: "{{ file_2_fetch.files }}"
+      with_items: "{{ UCS_fetch.files }}"
 
 
 - name: Test
-  hosts: velos
+  hosts: velos-lb
   connection: httpapi
   gather_facts: false
 
@@ -34,20 +34,20 @@
 
   tasks:
 
-    - name: GET Management-VLAN if Defined
-      ansible.builtin.uri:
-        url: 'https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant=cdsn7-i10800-test1'
-        method: GET
-        status_code: 
-          - 200
-          - 201
-          - 202 
-          - 204
-        timeout: 300
-        headers:
-          Content-Type: "application/yang-data+json"
-        force_basic_auth: true
-        user: "{{ ansible_user }}"
-        password: "{{ ansible_password }}"
-        validate_certs: false
+
+    - name: use find to get the files list which you want to copy/fetch
+      ansible.builtin.find: 
+        paths: /tmp/
+        patterns: "*.ucs"
+      register: UCS_fetch
       delegate_to: localhost
+
+    # - name: Run UCS Restore with Platform Migrate (via BIG-IP Command)
+    #   bigip_command:
+    #     commands:
+    #       - tmsh load sys ucs "{{ UCS_fetch.files[0].path.split('/')[2] }}" platform-migrate
+    #   register: restore_task
+
+    - name: Debug restore_task
+      ansible.builtin.debug:
+        msg: "tmsh load sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} platform-migrate"
