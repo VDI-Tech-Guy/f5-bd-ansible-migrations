@@ -14,12 +14,12 @@
     ansible_httpapi_use_proxy: no
   tasks:
 
-    - name: Get Failover State - Module
+    - name: Wait For Restore to Complete and system to become Active (30 Minutes of Retries)
       f5networks.f5_bigip.bigip_command:
         commands: show cm failover-status
       register: f5_online
       until: 
         - "'ACTIVE' in f5_online.stdout[0]"
         - "'green' in f5_online.stdout[0]"
-      retries: 40
-      delay: 30
+      retries: 30
+      delay: 60
