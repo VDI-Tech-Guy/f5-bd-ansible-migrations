@@ -19,7 +19,7 @@
         commands: show cm failover-status
       register: f5_online
       until: 
-        - "'Active' in f5_online.stdout[0]"
+        - "'active' in f5_online.stdout[0]"
         - "'green' in f5_online.stdout[0]"
       retries: 40
       delay: 30
