@@ -116,7 +116,7 @@
         provider: "{{ provider }}"
         save: true
       register: f5_save
-      until: f5_cmd_output.changed
+      until: f5_save.changed
       retries: 10
       delay: 10
           
