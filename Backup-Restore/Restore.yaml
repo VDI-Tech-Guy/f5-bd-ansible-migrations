@@ -71,9 +71,7 @@
       delegate_to: localhost
 
     - name: Run uptime command
-      ansible.builtin.command: 
-        cmd: "tmsh load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
-        timeout: 600
+      ansible.builtin.command: "tmsh load /sys ucs {{ UCS_fetch.files[0].path.split('/')[2] }} no-license platform-migrate"
       register: restore_task
 
     - name: Debug restore_task
