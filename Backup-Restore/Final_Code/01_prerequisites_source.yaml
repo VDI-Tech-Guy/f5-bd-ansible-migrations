@@ -1,0 +1,64 @@
+---
+- name: Get Crypto Info
+  hosts: lb
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Set Provider
+      ansible.builtin.set_fact:
+        provider:
+          server: "{{ ansible_host }}"
+          user: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          server_port: "{{ server_port }}"
+          no_f5_teem: yes
+          validate_certs: false
+
+    - name: Get Master Key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "f5mku -K"
+        provider: "{{ provider }}"
+      register: master_key_output
+
+    - name: debug master key master_key_output
+      ansible.builtin.debug:
+        var: master_key_output
+
+    - name: debug master key master_key_output
+      ansible.builtin.debug:
+        var: master_key_output.stdout
+
+    - name: set crypto key
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "
+          expect -c 'spawn tmsh modify /sys crypto master-key prompt-for-password;
+          sleep 1;
+          send -- {{ ansible_password }}\r;
+          sleep 1;
+          send -- {{ ansible_password }}\r;
+          sleep 1;'"
+        provider: "{{ provider }}"
+
+    - name: SAVE RUNNING CONFIG ON BIG-IP
+      f5networks.f5_modules.bigip_config:
+        provider: "{{ provider }}"
+        save: true
+
+    - name: "Copy Inventory for {{inventory_hostname}} to file" 
+      ansible.builtin.copy:
+        content: "{{ master_key_output | to_nice_json }}" 
+        dest: "/tmp/master_key_{{inventory_hostname}}.json"
+      delegate_to: localhost
+
+- name: Ansible Copy File
+  hosts: bastion-backup
+
+  tasks:
+    - name: Copy from Local to Remote location
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ item }}" 
+      with_fileglob: "/tmp/master_key_*.json"
