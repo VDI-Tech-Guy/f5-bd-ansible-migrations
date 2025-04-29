@@ -6,11 +6,12 @@
 
   tasks:
 
-    - name: Stop Services on BIG-IP Node
-      ansible.builtin.command: "bigstart stop"
+    - name: Stop BIGSTART to Disable Node
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "bigstart stop"
+        provider: "{{ provider }}"
       register: stop_task
-      changed_when: stop_task.rc != 0
-      become: true
 
     - name: Debug
       ansible.builtin.debug:
