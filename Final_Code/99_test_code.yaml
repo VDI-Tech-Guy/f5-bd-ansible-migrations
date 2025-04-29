@@ -22,7 +22,8 @@
           run /util bash -c "bigstart stop"
         provider: "{{ provider }}"
       register: stop_task
+      ignore_errors: true
 
-    - name: Debug
-      ansible.builtin.debug:
-        var: stop_task
+    # - name: Debug
+    #   ansible.builtin.debug:
+    #     var: stop_task
