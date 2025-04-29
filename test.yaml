@@ -7,18 +7,18 @@
   vars:
     ansible_httpapi_password: "{{ ansible_password }}"
     ansible_network_os: f5networks.f5_bigip.bigip
-    ansible_httpapi_use_ssl: yes
-    ansible_httpapi_validate_certs: no
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: false
     ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 300
-    ansible_httpapi_use_proxy: no
+    ansible_httpapi_use_proxy: false
   tasks:
 
     - name: Wait For Restore to Complete and system to become Active (30 Minutes of Retries)
       f5networks.f5_bigip.bigip_command:
         commands: show cm failover-status
       register: f5_online
-      until: 
+      until:
         - f5_online is defined
         - "'stdout' in f5_online"
         - f5_online.stdout is iterable and f5_online.stdout | length > 0
