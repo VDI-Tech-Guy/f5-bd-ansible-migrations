@@ -1,0 +1,17 @@
+---
+- name: GRAB F5 FACTS
+  hosts: lb
+  connection: local
+  gather_facts: false
+
+  tasks:
+
+    - name: Stop Services on BIG-IP Node
+      ansible.builtin.command: "bigstart stop"
+      register: stop_task
+      changed_when: stop_task.rc != 0
+      become: true
+
+    - name: Debug
+      ansible.builtin.debug:
+        var: stop_task
