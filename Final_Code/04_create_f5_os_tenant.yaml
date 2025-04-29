@@ -3,17 +3,17 @@
   hosts: bastion-backup
   tasks:
 
-    - name: use find to get the files list which you want to copy/fetch
-      ansible.builtin.find: 
+    - name: Use find to get the files list which you want to copy/fetch
+      ansible.builtin.find:
         paths: /tmp/
         patterns: "inventory_*.json"
       register: file_2_fetch
 
-    - name: use fetch to get the files
+    - name: Use fetch to get the files
       ansible.builtin.fetch:
         src: "{{ item.path }}"
         dest: /tmp/
-        flat: yes
+        flat: true
       with_items: "{{ file_2_fetch.files }}"
 
 - name: Create F5OS Tenant
@@ -40,7 +40,7 @@
 
     - name: Import Information From JSON File
       ansible.builtin.set_fact:
-        inventory: "{{ lookup('file',item) | from_json }}"
+        inventory: "{{ lookup('file', item) | from_json }}"
       with_fileglob: "/tmp/inventory_*.json"
       delegate_to: localhost
 
@@ -52,7 +52,7 @@
       f5networks.f5os.f5os_device_info:
         gather_subset:
           - tenant-images
-          - vlans 
+          - vlans
       register: tenant_info
 
     # - name: debug output
@@ -61,8 +61,8 @@
 
     - name: Create VLANs From Old Confiruation
       f5networks.f5os.f5os_vlan:
-        name: "vl{{item.tag}}"
-        vlan_id: "{{item.tag}}"
+        name: "vl{{ item.tag }}"
+        vlan_id: "{{ item.tag }}"
       with_items: "{{ inventory.vlans }}"
       when: '"yes" in item.interfaces[0].tagged'
 
@@ -72,7 +72,7 @@
       with_items: "{{ inventory.vlans }}"
       when: '"yes" in item.interfaces[0].tagged'
 
-    - name: debug output
+    - name: Debug Output
       ansible.builtin.debug:
         var: vlan_list
 
@@ -87,7 +87,7 @@
         mgmt_gateway: "{{ mgmt_gw }}"
         vlans: "{{ vlan_list }}"
         cpu_cores: "{{ cpu_cores }}"
-        memory: "{{ memory |int }}"
+        memory: "{{ memory | int }}"
         cryptos: enabled
         virtual_disk_size: "{{ disk_size | default('120') }}"
         running_state: configured
@@ -96,10 +96,10 @@
       ansible.builtin.uri:
         url: 'https://{{ ansible_host }}:8888/restconf/data/f5-tenants:tenants/tenant={{ inventory.devices[0].hostname.split(".")[0] }}/config/f5-tenant-mgmt-vlan:mgmt-vlan'
         method: PUT
-        status_code: 
+        status_code:
           - 200
           - 201
-          - 202 
+          - 202
           - 204
         timeout: 300
         body_format: json
@@ -117,6 +117,7 @@
     - name: Start F5 Tenant
       f5networks.f5os.f5os_tenant:
         name: '{{ inventory.devices[0].hostname.split(".")[0] }}'
+        nodes: 1
         running_state: deployed
 
     - name: Wait for F5 Tenant to Show GUI Page
@@ -126,8 +127,8 @@
         return_content: true
         status_code: 200
         validate_certs: false
-      register: atc_DO_status
-      until: atc_DO_status is success
+      register: atc_do_status
+      until: atc_do_status is success
       retries: 30
       delay: 30
       delegate_to: localhost

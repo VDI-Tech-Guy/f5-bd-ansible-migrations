@@ -7,22 +7,23 @@
   vars:
     ansible_httpapi_password: "{{ ansible_password }}"
     ansible_network_os: f5networks.f5_bigip.bigip
-    ansible_httpapi_use_ssl: yes
-    ansible_httpapi_validate_certs: no
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: false
     ansible_httpapi_port: "{{ server_port }}"
     ansible_command_timeout: 300
-    ansible_httpapi_use_proxy: no
+    ansible_httpapi_use_proxy: false
 
 
   tasks:
 
     - name: Get timestamp from the system
-      shell: "date +%Y-%m-%d%H-%M-%S"
+      ansible.builtin.shell:
+        shell: "date +%Y-%m-%d%H-%M-%S"
       register: tstamp
       delegate_to: localhost
 
     - name: Set variables
-      set_fact:
+      ansible.builtin.set_fact:
         cur_date: "{{ tstamp.stdout[0:10] }}"
         cur_time: "{{ tstamp.stdout[10:] }}"
 
@@ -46,8 +47,8 @@
         user: "{{ ansible_user }}"
         password: "{{ ansible_password }}"
         validate_certs: false
-      register: atc_Backup_status
-      until: atc_Backup_status is success
+      register: atc_backup_status
+      until: atc_backup_status is success
       retries: 30
       delay: 30
       delegate_to: localhost
@@ -63,7 +64,8 @@
   hosts: bastion-backup
   tasks:
     - name: Copy from Local to Remote location
-      copy:
-       src: "{{ item }}"
-       dest: "{{ item }}"
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ item }}"
+        mode: '0755'
       with_fileglob: "/tmp/*.ucs"

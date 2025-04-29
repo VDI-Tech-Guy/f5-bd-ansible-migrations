@@ -5,25 +5,25 @@
   tasks:
 
     - name: Find UCS Files
-      ansible.builtin.find: 
+      ansible.builtin.find:
         paths: /tmp/
         patterns: "*.ucs"
-      register: UCS_fetch
+      register: ucs_fetch
 
     - name: Remove JSON Files
       ansible.builtin.file:
         path: "{{ item.path }}"
         state: absent
-      with_items: "{{ UCS_fetch.files }}"
+      with_items: "{{ ucs_fetch.files }}"
 
     - name: Find JSON Files
-      ansible.builtin.find: 
+      ansible.builtin.find:
         paths: /tmp/
         patterns: "*.json"
-      register: JSON_fetch
+      register: json_fetch
 
     - name: Remove JSON Files
       ansible.builtin.file:
         path: "{{ item.path }}"
         state: absent
-      with_items: "{{ JSON_fetch.files }}"
+      with_items: "{{ json_fetch.files }}"

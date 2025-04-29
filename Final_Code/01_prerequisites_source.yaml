@@ -12,7 +12,7 @@
           user: "{{ ansible_user }}"
           password: "{{ ansible_password }}"
           server_port: "{{ server_port }}"
-          no_f5_teem: yes
+          no_f5_teem: true
           validate_certs: false
 
     - name: Get Master Key
@@ -22,15 +22,15 @@
         provider: "{{ provider }}"
       register: master_key_output
 
-    - name: debug master key master_key_output
+    - name: Debug Master Key master_key_output
       ansible.builtin.debug:
         var: master_key_output
 
-    - name: debug master key master_key_output
+    - name: Debug Master Key master_key_output.stdout
       ansible.builtin.debug:
         var: master_key_output.stdout
 
-    - name: set crypto key
+    - name: Set Crypto Key
       f5networks.f5_modules.bigip_command:
         commands: >
           run /util bash -c "
@@ -47,10 +47,11 @@
         provider: "{{ provider }}"
         save: true
 
-    - name: "Copy Inventory for {{inventory_hostname}} to file" 
+    - name: "Copy Inventory to file for {{ inventory_hostname }}"
       ansible.builtin.copy:
-        content: "{{ master_key_output | to_nice_json }}" 
-        dest: "/tmp/master_key_{{inventory_hostname}}.json"
+        content: "{{ master_key_output | to_nice_json }}"
+        dest: "/tmp/master_key_{{ inventory_hostname }}.json"
+        mode: '0755'
       delegate_to: localhost
 
 - name: Ansible Copy File
@@ -60,5 +61,6 @@
     - name: Copy from Local to Remote location
       ansible.builtin.copy:
         src: "{{ item }}"
-        dest: "{{ item }}" 
+        dest: "{{ item }}"
+        mode: '0755'
       with_fileglob: "/tmp/master_key_*.json"
