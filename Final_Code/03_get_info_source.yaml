@@ -5,6 +5,17 @@
   gather_facts: false
 
   tasks:
+
+    - name: Set Provider
+      ansible.builtin.set_fact:
+        provider:
+          server: "{{ ansible_host }}"
+          user: "{{ ansible_user }}"
+          password: "{{ ansible_password }}"
+          server_port: "{{ server_port }}"
+          no_f5_teem: true
+          validate_certs: false
+
     - name: COLLECT BIG-IP FACTS
       f5networks.f5_modules.bigip_device_info:
         gather_subset:
@@ -16,13 +27,7 @@
           - provision-info
           - sync-status
           - management-routes
-        provider:
-          server: "{{ ansible_host }}"
-          user: "{{ ansible_user }}"
-          password: "{{ ansible_password }}"
-          server_port: "{{ server_port }}"
-          no_f5_teem: true
-          validate_certs: false
+        provider: "{{ provider }}"
       register: inventory_info
 
     - name: "Copy Inventory_Info Variable to Execution Environment File"
@@ -31,13 +36,13 @@
         dest: "/tmp/inventory_{{ inventory_hostname }}.json"
         mode: '0755'
 
-    # - name: Stop Services on BIG-IP Node
-    #   ansible.builtin.command: "bigstart stop"
-    #   register: stop_task
-
-    # - name: Debug
-    #   ansible.builtin.debug:
-    #     var: stop_task
+    - name: Stop BIGSTART to Disable Node
+      f5networks.f5_modules.bigip_command:
+        commands: >
+          run /util bash -c "bigstart stop"
+        provider: "{{ provider }}"
+      register: stop_task
+      ignore_errors: true
 
 - name: Ansible Copy File
   hosts: bastion-backup
