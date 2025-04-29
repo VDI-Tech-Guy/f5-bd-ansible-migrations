@@ -17,8 +17,7 @@
   tasks:
 
     - name: Get timestamp from the system
-      ansible.builtin.shell:
-        shell: "date +%Y-%m-%d%H-%M-%S"
+      ansible.builtin.shell: "date +%Y-%m-%d%H-%M-%S"
       register: tstamp
       delegate_to: localhost
 
