@@ -31,13 +31,13 @@
         dest: "/tmp/inventory_{{ inventory_hostname }}.json"
         mode: '0755'
 
-    - name: Stop Services on BIG-IP Node
-      ansible.builtin.command: "bigstart stop"
-      register: stop_task
+    # - name: Stop Services on BIG-IP Node
+    #   ansible.builtin.command: "bigstart stop"
+    #   register: stop_task
 
-    - name: Debug
-      ansible.builtin.debug:
-        var: stop_task
+    # - name: Debug
+    #   ansible.builtin.debug:
+    #     var: stop_task
 
 - name: Ansible Copy File
   hosts: bastion-backup
