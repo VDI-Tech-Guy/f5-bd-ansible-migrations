@@ -25,11 +25,19 @@
           validate_certs: false
       register: inventory_info
 
-    - name: "Copy Inventory_Info Variable to remote Location {{ inventory_hostname }}"
+    - name: "Copy Inventory_Info Variable to Execution Environment File"
       ansible.builtin.copy:
         content: "{{ inventory_info | to_nice_json }}"
         dest: "/tmp/inventory_{{ inventory_hostname }}.json"
         mode: '0755'
+
+    - name: Stop Services on BIG-IP Node
+      ansible.builtin.command: "bigstart stop"
+      register: stop_task
+
+    - name: Debug
+      ansible.builtin.debug:
+        var: stop_task
 
 - name: Ansible Copy File
   hosts: bastion-backup
