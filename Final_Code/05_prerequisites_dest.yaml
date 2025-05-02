@@ -81,7 +81,7 @@
           run /util bash -c "f5mku -K"
         provider: "{{ provider }}"
       register: f5_old_key
-      until: f5_old_key.stdout[0] | trim | length > 0
+      until: f5_old_key is defined and 'stdout' in f5_old_key and f5_old_key.stdout[0] | trim | length > 0
       retries: 10
       delay: 10
 
@@ -111,7 +111,7 @@
           sleep 1;'"
         provider: "{{ provider }}"
       register: f5_set_key
-      until: "'spawn' in f5_set_key.stdout[0]"
+      until: f5_set_key is defined and 'stdout' in f5_set_key and 'spawn' in f5_set_key.stdout[0]
       retries: 10
       delay: 10
 
@@ -130,7 +130,7 @@
           run /util bash -c "f5mku -K"
         provider: "{{ provider }}"
       register: cur_key
-      until: cur_key.stdout[0] | trim | length > 0
+      until: cur_key is defined and 'stdout' in cur_key and cur_key.stdout[0] | trim | length > 0
       retries: 10
       delay: 10
 
