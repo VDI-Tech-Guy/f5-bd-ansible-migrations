@@ -10,7 +10,7 @@
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: false
     ansible_httpapi_port: "{{ server_port }}"
-    ansible_command_timeout: 300
+    ansible_command_timeout: 600
     ansible_httpapi_use_proxy: false
 
 
