@@ -59,7 +59,7 @@
       f5networks.f5_bigip.bigip_ucs_fetch:
         src: "{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
         dest: "/tmp/{{ inventory_hostname }}-{{ cur_date }}-{{ cur_time }}.ucs"
-
+        timeout: 600
 
 - name: Ansible Copy File
   hosts: bastion-backup
